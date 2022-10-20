@@ -1,0 +1,38 @@
+
+Switching on ATXPSU...
+Switching on main power...
+
+Reading Board File \MB\HBI0364B\io_v010f.txt
+
+Temperature (deg C)
+Outlet = 24.3 PMIC   = 27.9 SoC = 26.4 IN2  = 25.9 IN1 = 25.9 MidBrd = 28   PCIeSW = 31   MCC = 29.1 FPGA = 26.8 SoC Fan Speed = 9%
+ALERT off
+
+Configuring motherboard (rev B, var A)...
+
+Configuring FPGA from file \MB\HBI0364B\io_v010f.bit
+OSCCLK setup: PASSED
+GTXCLK setup: PASSED
+
+Writing SCC 0x014 with ACLK 50000000 Hz
+Writing SCC 0x00C with 0x00000003
+Writing SCC 0x020 with 0x04030201
+Writing SCC 0x024 with 0x08070605
+Writing SCC 0x028 with 0x00000A09
+Writing SCC 0x1160 with 0x00000001
+Writing SCC 0x1164 with 0x01000000
+Writing SCC 0x1168 with 0x00000000
+Writing SCC 0x116C with 0x00000000
+Writing SCC 0x1180 with 0x00000000
+Writing SCC 0x1184 with 0x0000000C
+Writing SCC 0x1188 with 0x00000000
+Writing SCC 0x118C with 0x00000000
+Writing SCC 0x1190 with 0x00000000
+Writing SCC 0x1194 with 0x00000000
+Writing SCC 0x1198 with 0x00000000
+Writing SCC 0x119C with 0x00000000
+
+Reading images file \MB\HBI0364B\images.txt
+
+MAC addrs test: PASSED
+

@@ -1,0 +1,7 @@
+#!/bin/bash
+if [[ ! -d cheribuild ]]; then
+    git clone https://github.com/CTSRD-CHERI/cheribuild.git
+fi
+echo "cheribuild"
+#git@github.com:CTSRD-CHERI/cheribuild.git
+

@@ -1,0 +1,28 @@
+BOARD: HBI0364B
+TITLE: M1SDP Configuration File
+
+[CONFIGURATION]
+TESTMENU: FALSE
+AUTORUN: TRUE               	;Auto Run from power on
+AUTORUNDELAY: 3             	;Delay in seconds to wait for key press to stop boot up
+
+RTC: TRUE                   	;TRUE = Enable RTC, False = Disable RTC
+
+APUART0:   0                	;0-USBPORT_3  1-PCCUART_5
+SCPUART:   0                	;0-USBPORT_4 1-PCCUART_4
+MCPUART0:  0                	;0-USBPORT_5 1-PCCUART_6
+
+
+EMBEDDED_ULINK_DEBUG: FALSE 	;FALSE - Embedded UlinkPlus debugger enabled unless and external DStream debugger cable is detected
+			    	;TRUE - Embedded UlinkPlus debugger enabled regardless of external DStream debugger connection
+
+VOLTAGEGUARD: TRUE          	;TRUE - Voltage error results in Board power down
+                            	;FALSE - Under/Over Voltage error, user can either proceed or halt boot
+
+DVIMODE: VGA                	;VGA/SVGA/XGA/SXGA/UXGA or HD1080 (MCC sets OSCCLK5)
+
+CONFSWITCH: 01010101        	;Configuration Switch[7:0] in binary
+
+CASE_FAN_SPEED: START       	;START(default speed)/SLOW/MEDIUM/FAST/10%/20%/.../100%
+
+USB_REMOTE: FALSE           	;Selects remote command via USB !TBA

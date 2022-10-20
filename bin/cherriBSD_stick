@@ -1,0 +1,24 @@
+#!/bin/bash
+
+#https://www.cheribsd.org/
+
+cherribsd_ver="22.05"
+#cherribsd_ver="22.05p1"
+cherribsd_img="cheribsd-memstick-arm64-aarch64c-${cherribsd_ver}.img"
+cherribsd_file="${cherribsd_img}.xz"
+cherribsd_url="https://download.cheribsd.org/releases/arm64/aarch64c/${cherribsd_ver}/${cherribsd_file}"
+
+if [[ ! -f ${cherribsd_img} ]]; then
+    if [[ ! -f ${cherribsd_file} ]]; then
+        wget ${cherribsd_url}
+    fi
+
+    if [[ ! -f ${cherribsd_img} ]]; then
+        unxz ${cherribsd_file}
+    fi
+fi
+
+echo "record CheriBSD Boot USB drive:"
+echo "dd if=${cherribsd_img} of=/dev/? bs=1048576"
+echo "sync"
+exit 0

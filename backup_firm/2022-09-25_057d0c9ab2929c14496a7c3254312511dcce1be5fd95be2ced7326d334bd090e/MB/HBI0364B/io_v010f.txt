@@ -1,0 +1,91 @@
+BOARD: HBI0364B
+TITLE: M1SDP IOFPGA Configuration File
+
+[FPGAS]
+TOTALFPGAS: 1               ;Total Number of FPGAs
+F0FILE: io_v010f.bit        ;FPGA0 Filename
+F0MODE: FPGA                ;FPGA0 Programming Mode
+
+[PMIC]
+MBPMIC: 80_1_86G.bin       ;MB PMIC
+
+[OSCCLKS]
+TOTALOSCCLKS: 15
+OSC0:  50.0                 ;OSC0-Y5 - SYS_REF_CLK
+OSC1:  50.0                 ;OSC0-Y4 - CPU0_REF_CLK
+OSC2:  50.0                 ;OSC0-Y6 - CPU1_REF_CLK
+OSC3:  50.0                 ;OSC1-Y2 - CLUS_REF_CLK
+OSC4:  50.0                 ;OSC1-Y4 - INT_REF_CLK
+OSC5:  50.0                 ;OSC1-Y6 - REF_CLK
+OSC6:  50.0                 ;OSC2-Y2 - DMC_REF_CLK
+OSC7:  50.0                 ;OSC2-Y4 - PXL_REF_CLK
+OSC8:  75.0                 ;OSC2-Y6 - IOFPGA_TLXCLK (Not Used - Reserved)
+OSC9:  85.0                 ;OSC3-Y2 - IOFPGA_ACLK
+OSC10: 12.288               ;OSC3-Y4 - IOFPGA_AUDCLK
+OSC11: 50.0                 ;OSC3-Y6 - IOFPGA_SPARECLK
+OSC12: 50.0                 ;OSC3-Y7 - DPU_REF_CLK
+OSC13: 50.0                 ;OSC1-Y5 - GPU_REF_CLK
+OSC14: 170.0                ;OSC2-Y7 - IOFPGA_TLX2XCLK
+
+
+[PERIPHERAL SUPPORT]
+FPGA_SMB: TRUE              ;SMB interface is supported (MCC_SMC<>FPGA_SMB)
+
+FPGA_SCC: TRUE              ;SCC interface is supported
+SCCREG:  0x68130000         ;SCC registers base address
+
+FPGA_DDR: TRUE              ;DDR interface is supported
+DDRBASE: 0x68040000         ;DDR I2C register address
+
+FPGA_SYSREG: TRUE           ;System register interface is supported
+FPGAREG: 0x68010000         ;System registers base address
+
+FPGA_HDMI: TRUE             ;HDMI interface is supported
+HDMIBASE: 0x680F0000        ;HDMI I2C register address
+
+FPGA_LAN: TRUE              ;LAN LAN9220 interface is supported
+LANBASE: 0x69100000         ;LAN LAN9220 base address
+
+FPGA_RTC: TRUE              ;RTC PL031 interface is supported
+RTCBASE: 0x68100000         ;RTC PL031 base address
+
+FPGA_QSPI: TRUE             ;QSPI interface is supported 
+QSPIBASE: 0x680C0000        ;QSPI controller base address
+QSPIDATA: 0x64000000        ;QSPI data address
+
+
+[SCC REGISTERS]
+TOTALSYSCONS: 16            ;Total Number of SCC registers defined
+SYSCON: 0x000C 0x00000003   ;IOFPGA SCC_MCC_MBS_ADDR
+SYSCON: 0x0020 0x04030201   ;IOFPGA CFG_REG8  Bits[31:24] SOC_IRQ[5] MUXsel, [23:16] SOC_IRQ[4] MUXsel, [15:8] SOC_IRQ[3] MUXsel,[7:0] AP_EXT_INT MUXsel
+SYSCON: 0x0024 0x08070605   ;IOFPGA CFG_REG9  Bits[31:24] MCP_EXT_INT MUXsel,[23:16] SCP_EXT_INT MUXsel,[15:8] SOC_IRQ[7] MUXsel,[7:0] SOC_IRQ[6] MUXsel
+SYSCON: 0x0028 0x00000A09   ;IOFPGA CFG_REG10 Bits[15:8]  F2PCC_INT MUXsel,  [7:0]   F2MCC_INT MUXsel
+
+SOCCON: 0x1160 0x00000001   ;SoC SCC BOOT_CTL - enable TLX
+SOCCON: 0x1164 0x01000000   ;SoC SCC BOOT_CTL_STA (0xX1000000 = MCC OK)
+SOCCON: 0x1168 0x00000000   ;SoC SCC SCP_BOOT_ADR
+SOCCON: 0x116C 0x00000000   ;SoC SCC MCP_BOOT_ADR
+
+; BOOT_GPR0 - SCP RAMFW Capsule base
+; Value of 0x0 means SCP ROM looks for capsule at 0x30000000
+; Non-zero value means SCP ROM looks for capsule at programmed base address
+SOCCON: 0x1180 0x00000000   ;SoC SCC BOOT_GPR0
+
+; BOOT_GPR1 - HW/FW configuration register
+; BIT0  - Bing mode (0 - Server mode, 1 - Client mode)
+; BIT1  - Reserved
+; BIT2  - Bing C1 tag cache control (0 - Disable, 1 - Enable)
+; BIT3  - Bing C2 tag cache control (0 - Disable, 1 - Enable)
+; BIT4  - CPU Cluster L3 cache control (0 - Disable, 1 - Enable)
+; BIT31:5 - Reserved
+SOCCON: 0x1184 0x0000000C   ;SoC SCC BOOT_GPR1
+
+; BOOT_GPR2, BOOT_GPR3 - Application Processor RVBAR base address
+; BOOT_GPR3 - RVBAR_HIGH, BOOT_GPR2 - RVBAR_LOW
+SOCCON: 0x1188 0x00000000   ;SoC SCC BOOT_GPR2
+SOCCON: 0x118C 0x00000000   ;SoC SCC BOOT_GPR3
+
+SOCCON: 0x1190 0x00000000   ;SoC SCC BOOT_GPR4
+SOCCON: 0x1194 0x00000000   ;SoC SCC BOOT_GPR5
+SOCCON: 0x1198 0x00000000   ;SoC SCC BOOT_GPR6
+SOCCON: 0x119C 0x00000000   ;SoC SCC BOOT_GPR7

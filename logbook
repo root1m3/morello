@@ -1,0 +1,328 @@
+Morello LOG BOOK
+================
+
+11-Oct:
+
+Received response from Cambridge University. CHERIBSD won't boot with a monitor plugged.
+
+Disconnected HDMI and boot from the console:
+
+MCC console:    screen /dev/ttyUSB0 115200  (as root bcs as user doesn't work)
+
+Still CHERIBSD doesn't boot even if a monitor us unplugged. Same error shown on screen after plugin the hdmi interface after boot.
+
+
+
+
+
+===========================================================================================================================================================
+29-sep: 1:1 Sep2022
+
+MM vs
+   Gavin Burns dsbdprogramme@digicatapult.org.uk
+   DSbD 
+   cherri-tech 
+
+
+
+explained our PoC as a vulnerability exploit
+explained technical blockers
+
+received already known links:
+https://ctsrd-cheri.github.io/cheribsd-getting-started/morello/index.html
+https://github.com/CTSRD-CHERI/cheribuild
+
+[problem]
+qemu live images not available.
+
+[FAIL] build qemu live image:
+./cheribuild.py --include-dependencies qemu
+
+
+===========================================================================================================================================================
+27-Sep:
+    Trying earlier version of cheriBSD:
+    dd if=cheribsd-memstick-arm64-aarch64c-22.05.img of=/dev/sdc bs=1048576
+
+    Problem at kernel boot: 2022-09-27/1664282350801.jpg
+
+
+    Same problem found on the two available cherryBSD versions 
+    cheribsd-memstick-arm64-aarch64c-22.05
+    cheribsd-memstick-arm64-aarch64c-22.05p1
+
+    from: 
+
+got stuck at:
+https://ctsrd-cheri.github.io/cheribsd-getting-started/morello-install/index.html
+"You will eventually be prompted to select a terminal emulation type:"
+
+[FAIL] Setup of CheriBSD in morello board from ctsrd-cheri.github.io 
+
+dicotomy:
+A) boot cherribsd on qemu emulator. goodbye morello board.
+B) Try one of 2 remaining branches: 
+   b1) boot gnu/linux and use gnu toolkit 
+   b2) boot android
+
+b1 is optimal for building our codebase
+A is optimal for abi stability
+
+
+Choosing A. It is the best route facing the objective of the PoC: testing fat pointers
+
+qemu
+====
+back to square 1
+https://ctsrd-cheri.github.io/cheribsd-getting-started/cover/index.html
+
+CheriBSD can be installed by downloading or building one of two types of disk images:
+
+    Memstick images that boot and automatically run bsdinstall, the FreeBSD installer, which can be used to prepare a filesystem on a disk, and then install CheriBSD onto it. These will typically be used on Arm Morello boards.
+    Live images that boot CheriBSD to a login prompt for interactive use. These will typically be used on instruction-set emulators such as QEMU and the Arm Morello FVP, as well as on FPGA.
+
+Interested in live images
+
+Memstick and live images can both be downloaded from the CheriBSD website https://www.cheribsd.org/
+circular links
+
+only memstick images are served
+
+Build the OSimage
+
+cheribuild is a Python-based build orchestration tool that is the preferred way to cross-build CheriBSD. It can be checked out from GitHub:
+git clone git@github.com:CTSRD-CHERI/cheribuild.git
+
+problem running as root
+problem git clone
+
+
+replaced
+git@github.com:CTSRD-CHERI/cheribuild.git
+with
+https://github.com/CTSRD-CHERI/cheribuild.git
+
+https://www.cl.cam.ac.uk/research/security/ctsrd/cheri/cheribsd.html
+
+Building and running CheriBSD/Morello in QEMU
+
+
+
+mm@roston:~/DSbD/cheribuild$ ./cheribuild.py --include-dependencies qemu
+Checking /home/mm/.config/cheribuild.json since /home/mm/DSbD/cheribuild/cheribuild.json doesn't exist
+Note: Configuration file /home/mm/.config/cheribuild.json does not exist, using only command line arguments.
+Sources will be stored in /home/mm/cheri
+Build artifacts will be stored in /home/mm/cheri/output
+cd /home/mm/DSbD/cheribuild && git fetch
+Fatal error: Dependency for qemu missing: Required library pixman-1 is missing!
+Possible solution: Run `apt install libpixman-1-dev`
+mm@roston:~/DSbD/cheribuild$ apt-get install libpixman-1-dev
+
+
+mm@roston:~/DSbD/cheribuild$ ./cheribuild.py --include-dependencies qemu
+Checking /home/mm/.config/cheribuild.json since /home/mm/DSbD/cheribuild/cheribuild.json doesn't exist
+Note: Configuration file /home/mm/.config/cheribuild.json does not exist, using only command line arguments.
+Sources will be stored in /home/mm/cheri
+Build artifacts will be stored in /home/mm/cheri/output
+cd /home/mm/DSbD/cheribuild && git fetch
+Fatal error (in target qemu): Could not find smbd -> QEMU SMB shares networking will not work
+
+
+
+
+
+===========================================================================================================================================================
+26-sep:
+    MCC console:    screen /dev/ttyUSB0 115200
+    Morello console: screen /dev/ttyUSB2 115200
+
+Cmd> help
+
+Arm M1SDP MCC Firmware v2.3.1
+Build Date: May 10 2022
+Build Time: 10:26:37
+
++ command ------------------+ function ---------------------------------+
+| CAP "fname" [/A]          | captures serial data to a file            |
+|                           |  [/A option appends data to a file]       |
+| FILL "fname" [nnnn]       | create a file filled with text            |
+|                           |  [nnnn - number of lines, default=1000]   |
+| TYPE "fname"              | displays the content of a text file       |
+| REN "fname1" "fname2"     | renames a file 'fname1' to 'fname2'       |
+| COPY "fin" ["fin2"] "fout"| copies a file 'fin' to 'fout' file        |
+|                           |  ['fin2' option merges 'fin' and 'fin2']  |
+| DEL "fname"               | deletes a file                            |
+| DIR "[mask]"              | displays a list of files in the directory |
+| FORMAT [label]            | formats Flash Memory Card                 |
+| USB_INIT                  | Re-initialize USB                         |
+| USB_ON                    | Enable usb                                |
+| USB_OFF                   | Disable usb                               |
+| SHUTDOWN                  | Shutdown PSU (leave micro running)        |
+| REBOOT                    | Power cycle system and reboot             |
+| RESET                     | Reset Board using CB_nRST                 |
+| IOFPGA_VERSION            | Displays IOFPGA Version                   |
+| DEBUG                     | Enters debug menu                         |
+| EEPROM                    | Enters eeprom menu                        |
+| HELP  or  ?               | displays this help                        |
+|                                                                       |
+| THE FOLLOWING COMMANDS ARE ONLY AVAILABLE IN RUN MODE                 |
+|                                                                       |
+| CASE_FAN_SPEED "SPEED"    | SLOW, MEDIUM, FAST, 0%, 10%, 20%, .. 100% |
+| READ_AXI "fname"          | Read system memory to file 'fname'        |
+|          "address"        | from address to end address               |
+|          "end_address"    |                                           |
+| WRITE_AXI "fname"         | Write file 'fname' to system memory       |
+|           "address"       | at address                                |
++---------------------------+-------------------------------------------+
+
+[[morello poweron button]]
+
+Arm M1SDP MCC Boot loader v1.0.0
+HBI0364 build 535
+
+MCC: Power On
+
+MCC to access SD card request acknowledged.
+Clear ULINK JTAG
+
+Time :  08:51:35 
+Date :  03:04:2000 
+
+Arm M1SDP MCC Firmware v2.3.1
+Build Date: May 10 2022
+Cmd> 
+
+
+*** Cant change neither date nor time
+https://ctsrd-cheri.github.io/cheribsd-getting-started/morello-firmware/index.html
+Setting the system clock
+
+Change Date? Y\N >y
+D:>26
+M:>9
+Y:>22
+Debug> date
+05/01/2083
+
+Reflashing the firmware
+
+Cmd> USB_ON
+Enabling debug USB...
+
+[[workstation]]
+dmesg
+[2617538.002880] usb-storage 1-7.3:1.0: USB Mass Storage device detected
+[2617538.003247] usb-storage 1-7.3:1.0: Quirks match for vid c251 pid 4003: 80
+[2617538.003363] scsi host7: usb-storage 1-7.3:1.0
+[2617539.018461] scsi 7:0:0:0: Direct-Access     ARM      M1SDP                 PQ: 0 ANSI: 0
+[2617539.019188] sd 7:0:0:0: Attached scsi generic sg2 type 0
+[2617539.020074] sd 7:0:0:0: [sdc] 3921920 512-byte logical blocks: (2.01 GB/1.87 GiB)
+[2617539.020873] sd 7:0:0:0: [sdc] Write Protect is off
+[2617539.020879] sd 7:0:0:0: [sdc] Mode Sense: 03 00 00 00
+[2617539.021652] sd 7:0:0:0: [sdc] No Caching mode page found
+[2617539.021663] sd 7:0:0:0: [sdc] Assuming drive cache: write through
+[2617539.067894]  sdc: sdc1
+
+Already found it mounted at /media/mm/M1SDP
+
+root@roston:~/DSbD# ls /media/mm/M1SDP/ -la
+total 260
+drwxr-xr-x  6 mm mm 16384 Jan  1  1970  .
+drwxrwx---+ 5 mm mm  4096 Sep 26 16:41  ..
+-rw-r--r--  1 mm mm  1203 Feb  2  2022  config.txt
+-rw-r--r--  1 mm mm   215 Feb  2  2022  ee0364b.txt
+drwxr-xr-x  4 mm mm 32768 Feb 14  2022  LICENSES
+-rw-r--r--  1 mm mm  1104 Jan  1  2016  LOG.TXT
+drwxr-xr-x  3 mm mm 32768 Feb 14  2022  MB
+drwxr-xr-x  2 mm mm 32768 Feb 14  2022  SOFTWARE
+drwxr-xr-x  2 mm mm 32768 Jun 28 16:18 'System Volume Information'
+
+These are the firmware files already stored in the internal SSD card of the Morello board.
+
+https://git.morello-project.org/morello/board-firmware.git
+
+============================
+Automated so far in:
+bin/firmware_update
+Calling it will upgrade the firmware
+============================
+
+Cmd> reboot
+
+Powering up system...
+
+long init ... log1
+
+Change Date? Y\N >y
+D:>26
+M:>09
+Y:>2022
+Debug> exit
+Cmd> debug
+Debug> date
+26/09/2022
+
+Change Date? Y\N >n
+Debug> time
+20 : 28 : 53
+
+Change Time? Y\N >y
+s:>0
+m:>40
+h:>17
+Debug> exit
+Cmd> debug
+Debug> time
+17 : 40 : 06
+
+After upgrading the firmware the time and date reset worked! :)
+
+[PASS] Upgrading Morello board firmware from github
+[deliver] bin/firmware_update
+
+Following https://ctsrd-cheri.github.io/cheribsd-getting-started/morello-install/index.html
+Installing cherribsd on a Morello Board
+
+Automated the task of downloading the image from https://download.cheribsd.org/releases/arm64/aarch64c
+22.05/                                             24-May-2022 15:56                   -
+22.05p1/                                           08-Jul-2022 21:21 
+
+bin/cherriBSD_stick
+producing the file: cheribsd-memstick-arm64-aarch64c-22.05p1.img
+
+dmesg pendrive is sdb: sdb1
+
+dd if=cheribsd-memstick-arm64-aarch64c-22.05p1.img of=/dev/sdb bs=1048576
+
+freeBSD doesnt boot.
+
+2022-09-26/1664220462617.jpg
+2022-09-26/1664280845333.jpg
+can't find files while configuring modules on kernel load
+/boot/entropy
+/etc/hostid
+No valid device tree blob found
+
+       Install CHERRIBSD OS:
+       https://ctsrd-cheri.github.io/cheribsd-getting-started/cover/index.html
+
+
+===========================================================================================================================================================
+20-sep:
+    [deliver] Submitted workplan /home/mm/DSbD/work_plan_katlas.pdf
+
+===========================================================================================================================================================
+19-sep: Added test case:
+   test_pointers();
+   assert fat pointers have working operators '==' and '!='
+
+===========================================================================================================================================================
+18-sep:
+   work plan draft
+
+===========================================================================================================================================================
+9-sep: unbox Morello board
+       learn specs
+
+
+
