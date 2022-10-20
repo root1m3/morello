@@ -1,0 +1,14 @@
+BOARD: HBI0364B
+TITLE: M1SDP Motherboard Configuration File
+
+[MCCS]
+MBBIOS: mbb_v232.ebf         ;MB BIOS IMAGE
+
+[PCCS]
+PCCBIOS: pcc_v057.bin        ;PCC BIOS IMAGE
+
+[PCIE]
+MBPCIE: pci_v002.bin         ;MB PCIE SWITCH CONFIG
+
+[FPGA]                       ;Please select the required IOFPGA image
+APPFILE: io_v010f.txt        ;M1SDP IOFPGA image  Morello

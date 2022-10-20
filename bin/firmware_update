@@ -8,24 +8,26 @@
 upstreamgit="https://git.morello-project.org/morello/board-firmware.git"
 
 function help_mount {
-	echo "plug USB debug cable"
-	echo "Access MCC: screen /dev/ttyUSB0 115200"
-	echo "Mount sdcard: USB_ON"
-	echo "It should be then mounted at $mnt"
+	echo "  plug USB debug cable"
+	echo "  Access MCC: screen /dev/ttyUSB0 115200"
+	echo "  Mount sdcard: USB_ON"
+	echo "  It should be then mounted at $mnt"
 }
 
 function help {
-    echo "Prerequisite:
+    echo "Prerequisite:"
     help_mount
     echo ""
     echo "examples:"
-    echo "$0 git                   Backs-up current content and"
-    echo "                             writes the latest version from"
-    echo "                             $upstreamgit"
+    echo "$0 git"
+    echo "      Backs-up current content and"
+    echo "      writes the latest version from"
+    echo "      $upstreamgit"
     echo ""
-    echo "$0 backup_firm/XXXXX     Backs-up current content and"
-    echo "                             writes the version found in"
-    echo "                             backup_firm/XXXXX"
+    echo "$0 git backup_firm/XXXXX"
+    echo "      Backs-up current content and"
+    echo "      writes the version found in"
+    echo "      backup_firm/XXXXX"
     echo ""
 }
 
@@ -61,7 +63,7 @@ fi
 mnt="/media/mm/M1SDP"
 reltestfile="MB/HBI0364B/board.txt"
 testfile="${mnt}/${reltestfile}"
-if [[ ! -f $testfile ]]; then
+if [[ ! -f ${testfile} ]]; then
     help_mount
 	exit 1
 fi
@@ -80,26 +82,25 @@ fi
 # 4.- Verify Backup integrity by comparing hashes of a file in backup_firm, sdcard
 h=`sha256sum backup_firm/${ts}_${h0}/${reltestfile}  | awk '{ print $1 }'`
 if [[ "_$h0" != "_$h" ]]; then
-    echo "KO 78879 src and dst produce different hashes"
+    echo "KO 78879 src and dst produce different hashes."
     exit 1
 fi
 echo "created backup of current sdcard in morello board at backup_firm/${ts}_${h}"
 
 # 5.- Verify sdcard and src have different versions
-nh=`sha256sum board-firmware/${reltestfile}  | awk '{ print $1 }'`
+nh=`sha256sum ${src}/${reltestfile} | awk '{ print $1 }'`
 if [[ "_$nh" == "_$h" ]]; then
-    cat board-firmware/${reltestfile}
+    cat ${src}/${reltestfile}
     echo "KO 78819 it seems the host has already this version"
     exit 1
 fi
 
 # 6.- replacing content of sdcard using src
-
 echo "#################################################"
 echo "Overwiting sdcard."
-echo "sdcard at $mnt
-echo "backed up in: backup_firm/${ts}_${h0}
-echo "new content from: $src
+echo "sdcard at $mnt"
+echo "backed up in: backup_firm/${ts}_${h0}"
+echo "new content from: $src"
 echo "#################################################"
 echo "yes?"
 read a
@@ -116,6 +117,6 @@ sync
 
 echo "done!."
 echo "umount $mnt"
-echo "When done, you must unmount the mounted filesystem to ensure that all blocks in your workstation's filesystem buffer cache have been written back, and to avoid concurrent accesses leading to possible filesystem corruption. This must be done before issuing the MCC reboot command."
+echo "When done, you must unmount the mounted filesystem (USB_OFF) to ensure that all blocks in your workstation's filesystem buffer cache have been written back, and to avoid concurrent accesses leading to possible filesystem corruption. This must be done before issuing the MCC reboot command."
 exit 0
 
