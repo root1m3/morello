@@ -1,6 +1,135 @@
 Morello LOG BOOK
 ================
 
+
+===========================================================================================================================================================
+20 Oct
+
+public development at github url: https://github.com/root1m3/morello
+
+improved bin/firmware_update
+
+
+------------------
+root@roston:~/us/core2/katlas/DSbD/morello# bin/firmware_update 
+Prerequisite:
+  plug USB debug cable
+  Access MCC: screen /dev/ttyUSB0 115200
+  Mount sdcard: USB_ON
+  It should be then mounted at 
+
+examples:
+bin/firmware_update git
+      Backs-up current content and
+      writes the latest version from
+      https://git.morello-project.org/morello/board-firmware.git
+
+bin/firmware_update git backup_firm/XXXXX
+      Backs-up current content and
+      writes the version found in
+      backup_firm/XXXXX
+
+KO 67857 specify source dir or git.
+------------------
+
+
+Restore sdcard content with legacy backup (morello board original sdcard content)
+--------------------------------------------------------
+bin/firmware_update  backup_firm/2022-09-25_057d0c9ab2929c14496a7c3254312511dcce1be5fd95be2ced7326d334bd090e
+backing up sdcard...
+created backup of current sdcard in morello board at backup_firm/2022-10-20_27465bf2aca905985b7305753c2326cc960a593f21d505cd1af8abbe1c7d65b3
+#################################################
+Overwiting sdcard.
+sdcard at /media/mm/M1SDP
+backed up in: backup_firm/2022-10-20_27465bf2aca905985b7305753c2326cc960a593f21d505cd1af8abbe1c7d65b3
+new content from: backup_firm/2022-09-25_057d0c9ab2929c14496a7c3254312511dcce1be5fd95be2ced7326d334bd090e
+#################################################
+yes?
+deleting old firmware in sdcard
+copying new firmware in sdcard
+syncing
+done!.
+umount /media/mm/M1SDP
+When done, you must unmount the mounted filesystem to ensure that all blocks in your workstation's filesystem buffer cache have been written back, and to avoid concurrent accesses leading to possible filesystem corruption. This must be done before issuing the MCC reboot command.
+--------------------------------------------------------
+
+
+came across this logbook: https://oxon.tech/2021/05/04/dsbd-getting-started/
+
+==========qemu=============
+
+as non-root user:
+
+git clone https://github.com/CTSRD-CHERI/cheribuild.git
+cd cheribuild
+./cheribuild.py --qemu/no-use-smbd --include-dependencies qemu
+
+*|\-/|\-/|\-
+built for target 'qemu' in 273.25427293777466 seconds
+
+====
+./cheribuild.py -d build-and-run-cheribsd-riscv64-purecap
+Fatal error: Dependency for cheribsd-riscv64-purecap missing: Required library libarchive is missing!
+
+
+Try to not build bur run a prebuilt image in qemu
+
+------
+wget https://download.cheribsd.org/releases/arm64/aarch64c/22.05p1/cheribsd-memstick-arm64-aarch64c-22.05p1.img.xz
+
+aptitude install libarchive-dev libarchive-tools
+
+./cheribuild.py --qemu/no-use-smbd run-riscv64-purecap -d
+*|\-/|\-/|\-
+
+nice read while building: 
+   https://www.cl.cam.ac.uk/~nwf20/cheri-exercises-book/introduction/cheatsheet-release.html
+   
+
+1st error:
+Cannot find host tool 'time' in PATH (/sbin:/bin:/usr/sbin:/usr/bin::::::::::::::::::::::::::::::::).
+
+apt install time
+
+./cheribuild.py --qemu/no-use-smbd run-riscv64-purecap -d
+
+Fatal error (in target gdb-riscv64-hybrid-for-purecap-rootfs): Command `nice gmake -j8 all-binutils` failed with non-zero exit code 2
+
+/home/root1m3/cheri/gdb/missing: 81: makeinfo: Permission denied
+WARNING: 'makeinfo' is missing on your system.
+         You should only need it if you modified a '.texi' file, or
+         any other file indirectly affecting the aspect of the manual.
+         You might want to install the Texinfo package:
+         <http://www.gnu.org/software/texinfo/>
+         The spurious makeinfo call might also be the consequence of
+         using a buggy 'make' (AIX, DU, IRIX), in which case you might
+         want to install GNU make:
+ 
+attributed to debian unstable.
+
+--------------------
+apt install texinfo
+The following packages have unmet dependencies:
+ texinfo : Depends: perlapi-5.32.0
+E: Unable to correct problems, you have held broken packages.
+--------------------
+
+P2P Session.
+Konrad:
+Hinted to not using HDMI, but the Morello serial port.
+Hinted reading https://ctsrd-cheri.github.io/cheribsd-getting-started/morello-console/index.html
+Hinted using 2 screen terminasls, one for MCC and Morello system console respectively
+
+screen /dev/ttyUSB2 115200
+
+
+
+==========back to cherriBSD=============
+/dev/cuaU2 -s 115200
+
+
+
+===========================================================================================================================================================
 11-Oct:
 
 Received response from Cambridge University. CHERIBSD won't boot with a monitor plugged.

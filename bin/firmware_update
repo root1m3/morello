@@ -6,6 +6,7 @@
 #src="backup_firm/XXXXX"
 
 upstreamgit="https://git.morello-project.org/morello/board-firmware.git"
+mnt="/media/mm/M1SDP"
 
 function help_mount {
 	echo "  plug USB debug cable"
@@ -18,17 +19,20 @@ function help {
     echo "Prerequisite:"
     help_mount
     echo ""
+    echo "$0 <options> <src>"
     echo "examples:"
     echo "$0 git"
     echo "      Backs-up current content and"
     echo "      writes the latest version from"
     echo "      $upstreamgit"
     echo ""
-    echo "$0 git backup_firm/XXXXX"
+    echo "$0 backup_firm/XXXXX"
     echo "      Backs-up current content and"
     echo "      writes the version found in"
     echo "      backup_firm/XXXXX"
     echo ""
+    echo "options"
+    echo "--nobackup      Omits backing up current sdcard content"
 }
 
 if [[ -z $1 ]]; then
@@ -37,7 +41,26 @@ if [[ -z $1 ]]; then
     exit 1
 fi
 
-src=$1
+let backup=1
+while [[ true ]]; do
+    opt=$1
+    shift
+    if [[ "_$opt" == "_--nobackup" ]]; then
+        echo "nobackup flag"
+        let backup=0
+        continue
+    else
+        break
+    fi
+done
+src=$opt
+if [[ "_$src" == "_" ]]; then
+    help
+    echo "KO 69262 <src> expected."
+    exit 1
+fi
+
+
 
 # 1.- !src: download latest version from upstream git 
 #     src:  points to backup dir
@@ -53,39 +76,42 @@ if [[ "_$src" == "_git" ]]; then
         popd
     fi
     src="board-firmware"
-else
-    if [[ ! -d $src ]]; then
-        echo "KO 77869 $src dir doesn't exist."
-    fi
+fi
+
+if [[ ! -d $src ]]; then
+    echo "KO 77869 $src dir doesn't exist."
+    exit 1
 fi
 
 # 2.- Verify the sdcard is mounted at /media/mm/M1SDP
-mnt="/media/mm/M1SDP"
 reltestfile="MB/HBI0364B/board.txt"
 testfile="${mnt}/${reltestfile}"
 if [[ ! -f ${testfile} ]]; then
     help_mount
+    echo "KO 87985 $mnt not found"
 	exit 1
 fi
 
-# 3.- Backsup content of sd card in directory backup_firm/<timestamp>_<hash of file board.txt>/
-ts=`date +%F`
-echo "backing up sdcard..."
-h0=`sha256sum ${testfile} | awk '{ print $1 }'`
-mkdir -p backup_firm/${ts}_${h0}
-cp -R ${mnt}/* backup_firm/${ts}_${h0}/
-if [[ $? -ne 0 ]]; then
-    echo "KO 66985 Can't backup current firmware"
-    exit 1
-fi
+if [[ $backup -eq 1 ]]; then
+    # 3.- Backsup content of sd card in directory backup_firm/<timestamp>_<hash of file board.txt>/
+    ts=`date +%F`
+    echo "backing up sdcard..."
+    h0=`sha256sum ${testfile} | awk '{ print $1 }'`
+    mkdir -p backup_firm/${ts}_${h0}
+    cp -R ${mnt}/* backup_firm/${ts}_${h0}/
+    if [[ $? -ne 0 ]]; then
+        echo "KO 66985 Can't backup current firmware"
+        exit 1
+    fi
 
-# 4.- Verify Backup integrity by comparing hashes of a file in backup_firm, sdcard
-h=`sha256sum backup_firm/${ts}_${h0}/${reltestfile}  | awk '{ print $1 }'`
-if [[ "_$h0" != "_$h" ]]; then
-    echo "KO 78879 src and dst produce different hashes."
-    exit 1
+    # 4.- Verify Backup integrity by comparing hashes of a file in backup_firm, sdcard
+    h=`sha256sum backup_firm/${ts}_${h0}/${reltestfile}  | awk '{ print $1 }'`
+    if [[ "_$h0" != "_$h" ]]; then
+        echo "KO 78879 src and dst produce different hashes."
+        exit 1
+    fi
+    echo "created backup of current sdcard in morello board at backup_firm/${ts}_${h}"
 fi
-echo "created backup of current sdcard in morello board at backup_firm/${ts}_${h}"
 
 # 5.- Verify sdcard and src have different versions
 nh=`sha256sum ${src}/${reltestfile} | awk '{ print $1 }'`
@@ -99,7 +125,11 @@ fi
 echo "#################################################"
 echo "Overwiting sdcard."
 echo "sdcard at $mnt"
-echo "backed up in: backup_firm/${ts}_${h0}"
+if [[ $backup -eq 1 ]]; then
+    echo "backed up in: backup_firm/${ts}_${h0}"
+else
+    echo "WARNING: not backing-up the current sdcard content!."
+fi
 echo "new content from: $src"
 echo "#################################################"
 echo "yes?"
