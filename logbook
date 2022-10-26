@@ -1,6 +1,84 @@
 Morello LOG BOOK
 ================
 
+===========================================================================================================================================================
+26 Oct
+
+I left this message in Slack:
+
+Hi,
+I have created this utility for updating the firmware in the Morello board.
+Feel free to check it out, and why not improve it. : )
+https://github.com/root1m3/morello/blob/main/bin/firmware_updateOn the other hand:
+I wish I could say I am able to use cheriBSD but the computer refuses to boot the cheriBSD installer from the pendrive (see my last report above).I'd appreciate some review on my steps to try it out:
+1- update firmware
+2- record stick
+3- power up from MCC
+4- the cheriBSD installer freezes nearly after hitting enter on the boot menu
+I'm stuck hereThank you
+Marcos
+
+===========================================================================================================================================================
+24 Oct
+
+    MCC console:    screen /dev/ttyUSB0 115200
+    Morello console: screen /dev/ttyUSB2 115200
+
+latest firmware: Arm M1SDP MCC Firmware v2.3.2
+cheribsd-memstick-arm64-aarch64c-22.05.img
+Morello console:
+    _____ _               _ ____   _____ _____
+   / ____| |             (_)  _ \ / ____|  __ \
+  | |    | |__   ___ _ __ _| |_) | (___ | |  | |
+  | |    | '_ \ / _ \ '__| |  _ < \___ \| |  | |
+  | |____| | | |  __/ |  | | |_) |____) | |__| |
+   \_____|_| |_|\___|_|  |_|____/|_____/|_____/
+                                                 ```                        `
+                                                s` `.....---.......--.```   -/
+ /---------- Welcome to CheriBSD ----------\    +o   .--`         /y:`      +.
+ |                                         |     yo`:.            :o      `+-
+ |  1. Boot Multi user [Enter]             |      y/               -/`   -o/
+ |  2. Boot Single user                    |     .-                  ::/sy+:.
+ |  3. Escape to loader prompt             |     /                     `--  /
+ |  4. Reboot                              |    `:                          :`
+ |  5. Cons: Serial                        |    `:                          :MnpSyncSendPacket: No network cable detected.
+`|                                         |     /                          /
+ |  Options:                               |     .-                        -.
+ |  6. Kernel: default/kernel (1 of 1)     |      --                      -.
+ |  7. Boot Options                        |       `:`                  `:`
+ |                                         |         .--             `--.
+ |                                         |            .---.....----.
+ \-----------------------------------------/
+   Autoboot in 4 seconds. [Space] to pause  
+
+Loading kernel...
+/boot/kernel/kernel text=0x2e0 text=0x858830 text=0x2494f8 text=0x30 data=0x2631
+e0 data=0x0+0x357d40 0x8+0x11ba28+0x8+0xe9167-
+Loading configured modules...
+can't find '/boot/entropy'
+can't find '/etc/hostid'
+No valid device tree blob found!
+WARNING! Trying to fire up the kernel, but no device tree blob found!
+EFI framebuffer information:
+addr, size     0xfe000000, 0x7e9000
+dimensions     1920 x 1080
+stride         1920
+masks          0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000
+
+
+Toast 
+
+host# wget https://download.cheribsd.org/releases/arm64/aarch64c/22.05p1/cheribsd-memstick-arm64-aarch64c-22.05p1.img.xz
+host# sha256sum cheribsd-memstick-arm64-aarch64c-22.05p1.img.xz 
+87aae719ef06849ec03dc20a3268a81fda3d94e8bf3c4d9ce2db377fb452bdba  cheribsd-memstick-arm64-aarch64c-22.05p1.img.xz
+host# unxz cheribsd-memstick-arm64-aarch64c-22.05p1.img.xz
+host# dd if=cheribsd-memstick-arm64-aarch64c-22.05p1.img of=/dev/sdd bs=1048576
+host# sync; eject dev/sdd
+MCC: reboot
+Morello Console:
+same result.
+
+
 
 ===========================================================================================================================================================
 20 Oct
