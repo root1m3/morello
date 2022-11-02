@@ -1,0 +1,33 @@
+#!/bin/bash
+# https://git.morello-project.org/morello/docs/-/blob/morello/mainline/user-guide.rst#syncing-the-source-code
+dir=morello_workspace
+
+if [[ -d $dir ]]; then
+    echo "KO $dir exists."
+    exit 1
+fi
+
+BRANCH="morello/release-1.4"
+GROUP="busybox"
+#Supported options for <GROUP> are: android bsp busybox
+
+function install_reptool {
+    curl -o repo https://storage.googleapis.com/git-repo-downloads/repo
+    gpg --keyserver keys.openpgp.org --recv-key 8BB9AD793E8E6153AF0F9A4416530D5E920F5C65
+    curl -s https://storage.googleapis.com/git-repo-downloads/repo.asc | gpg --verify - repo && echo "OK verify."
+    chmod +x repo
+#install -m 755 ${REPO} ~/bin/repo
+}
+
+function doit {
+    install_reptool
+    ./repo init -u https://git.morello-project.org/morello/manifest.git -b ${BRANCH} -g ${GROUP}
+    ./repo sync
+
+
+}
+
+
+pushd $dir > /dev/null
+    doit
+popd > /dev/null

@@ -1,6 +1,27 @@
 Morello LOG BOOK
 ================
 
+
+===========================================================================================================================================================
+2 Nov
+
+Busybox:
+https://git.morello-project.org/morello/docs/-/blob/morello/mainline/user-guide.rst#ubuntu-distribution
+
+4.2.4.   BusyBox with Morello purecap environment
+
+ttyUSB<n> 00FT<platform-serial-num>B(0) Motherboard Configuration Controller(MCC)
+ttyUSB<n+1> 00FT<platform-serial-num>B(1) Platform Controller Chip(PCC)
+ttyUSB<n+2> 00FT<platform-serial-num>B(2) Application Processor(AP)
+ttyUSB<n+3> 00FT<platform-serial-num>B(3) System Control Processor(SCP)
+ttyUSB<n+4> 00FT<platform-serial-num>A(0) Manageability Control Processor(MCP)
+ttyUSB<n+5> 00FT<platform-serial-num>A(1) IOFPGA UART0
+ttyUSB<n+6> 00FT<platform-serial-num>A(2) IOFPGA UART1
+ttyUSB<n+7> 00FT<platform-serial-num>A(3) AP Secure UART
+
+
+
+
 ===========================================================================================================================================================
 26 Oct
 
