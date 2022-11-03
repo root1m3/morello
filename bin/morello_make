@@ -1,0 +1,48 @@
+#!/bin/bash
+# https://git.morello-project.org/morello/docs/-/blob/morello/mainline/user-guide.rst#syncing-the-source-code
+
+cmd=$1
+shift
+
+function help {
+    echo "$0 check_deps"
+    echo "$0 build_firmware"
+    echo "$0 build_busybox"
+}
+
+function check_deps {
+    ./build-scripts/check_dep.sh
+}
+
+function build_firmware {
+    PLATFORM_TYPE=soc #fvp soc
+    FILESYSTEM=none #android-nano android-swr busybox none
+    CMD=build #clean build all
+    ./build-scripts/build-all.sh -p $PLATFORM_TYPE -f $FILESYSTEM $CMD
+}
+
+function build_busybox {
+    PLATFORM_TYPE=soc #fvp soc
+    FILESYSTEM=busybox #android-nano android-swr busybox none
+    CMD=build #clean build all
+    ./build-scripts/build-all.sh -p $PLATFORM_TYPE -f $FILESYSTEM $CMD
+}
+
+if [[ "_$cmd" == "_check_deps" ]]; then
+    check_deps
+    exit $?
+fi
+
+if [[ "_$cmd" == "_build_firmware" ]]; then
+    build_firmware
+    exit $?
+fi
+
+if [[ "_$cmd" == "_build_busybox" ]]; then
+    build_busybox
+    exit $?
+fi
+
+help
+exit 1
+

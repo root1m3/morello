@@ -3,6 +3,25 @@ Morello LOG BOOK
 
 
 ===========================================================================================================================================================
+3 Nov
+
+https://git.morello-project.org/morello/docs/-/blob/morello/mainline/user-guide.rst#id6
+
+apt-get install autoconf autopoint bc bison build-essential \
+    ca-certificates cpio curl device-tree-compiler dosfstools doxygen \
+    fdisk flex gdisk gettext-base git libncurses5 libssl-dev libtinfo5 \
+    linux-libc-dev-arm64-cross lsb-release m4 mtools  pkg-config python \
+    python3-distutils rsync snapd unzip uuid-dev wget telnet xterm
+
+
+
+
+
+
+
+
+
+===========================================================================================================================================================
 2 Nov
 
 Busybox:

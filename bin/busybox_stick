@@ -2,32 +2,53 @@
 # https://git.morello-project.org/morello/docs/-/blob/morello/mainline/user-guide.rst#syncing-the-source-code
 dir=morello_workspace
 
-if [[ -d $dir ]]; then
-    echo "KO $dir exists."
-    exit 1
-fi
-
 BRANCH="morello/release-1.4"
 GROUP="busybox"
 #Supported options for <GROUP> are: android bsp busybox
 
+cmd=$1
+shift
+
 function install_reptool {
-    curl -o repo https://storage.googleapis.com/git-repo-downloads/repo
-    gpg --keyserver keys.openpgp.org --recv-key 8BB9AD793E8E6153AF0F9A4416530D5E920F5C65
-    curl -s https://storage.googleapis.com/git-repo-downloads/repo.asc | gpg --verify - repo && echo "OK verify."
-    chmod +x repo
+    mkdir -p bin
+    if [[ ! -x bin/repo ]]; then
+        pushd bin > /dev/null
+            curl -o repo https://storage.googleapis.com/git-repo-downloads/repo
+            gpg --keyserver keys.openpgp.org --recv-key 8BB9AD793E8E6153AF0F9A4416530D5E920F5C65
+            curl -s https://storage.googleapis.com/git-repo-downloads/repo.asc | gpg --verify - repo && echo "OK verify."
+            chmod +x repo
+        popd > /dev/null
+    fi
 #install -m 755 ${REPO} ~/bin/repo
 }
 
 function doit {
     install_reptool
-    ./repo init -u https://git.morello-project.org/morello/manifest.git -b ${BRANCH} -g ${GROUP}
-    ./repo sync
-
-
+    if [[ ! -d morello-aarch64 ]]; then
+        bin/repo init -u https://git.morello-project.org/morello/manifest.git -b ${BRANCH} -g ${GROUP}
+    fi
+    if [[ "_$cmd" == "_sync" ]]; then
+        bin/repo sync
+        echo "repo synced"
+        exit $?
+    fi
 }
 
+mkdir -p $dir
 
 pushd $dir > /dev/null
     doit
 popd > /dev/null
+
+pushd $dir/bin > /dev/null
+    rm -f make.sh
+    ln -s ../../bin/morello_make make.sh
+popd > /dev/null
+
+echo "$dir has been set up."
+echo "cd $dir"
+echo "bin/make.sh"
+
+
+exit 0
+
