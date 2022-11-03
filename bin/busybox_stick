@@ -27,8 +27,8 @@ function doit {
     if [[ ! -d morello-aarch64 ]]; then
         bin/repo init -u https://git.morello-project.org/morello/manifest.git -b ${BRANCH} -g ${GROUP}
     fi
+    bin/repo sync
     if [[ "_$cmd" == "_sync" ]]; then
-        bin/repo sync
         echo "repo synced"
         exit $?
     fi
