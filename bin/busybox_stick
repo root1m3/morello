@@ -9,6 +9,8 @@ GROUP="busybox"
 cmd=$1
 shift
 
+echo "DEPS: apt install curl python"
+
 function install_reptool {
     mkdir -p bin
     if [[ ! -x bin/repo ]]; then
