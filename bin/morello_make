@@ -4,10 +4,13 @@
 cmd=$1
 shift
 
+
+
 function help {
     echo "$0 check_deps"
     echo "$0 build_firmware"
     echo "$0 build_busybox"
+    echo "deps: cmake"
 }
 
 function check_deps {

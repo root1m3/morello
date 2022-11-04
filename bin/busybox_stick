@@ -5,11 +5,13 @@ dir=morello_workspace
 BRANCH="morello/release-1.4"
 GROUP="busybox"
 #Supported options for <GROUP> are: android bsp busybox
-
 cmd=$1
 shift
 
-echo "DEPS: apt install curl python"
+echo "DEPS:"
+cat << EOF
+apt install autoconf autopoint bc bison build-essential ca-certificates cpio curl device-tree-compiler dosfstools doxygen fdisk flex gdisk gettext-base git libncurses5 libssl-dev libtinfo5 linux-libc-dev-arm64-cross lsb-release m4 mtools  pkg-config python python3-distutils rsync snapd unzip uuid-dev wget telnet xterm curl python
+EOF
 
 function install_reptool {
     mkdir -p bin
