@@ -2,6 +2,31 @@ Morello LOG BOOK
 ================
 
 ===========================================================================================================================================================
+7 Nov
+
+Paulious 1:1 - triage in search of cheriBSD-unable-to-install problem.
+
+sudo-powered access to MORELLO BOARD, @KATLAS:
+
+sudo screen -ls
+There are screens on:
+	582726.morello_display	(07/11/22 12:56:29)	(Detached)
+	582724.mcc	(07/11/22 12:56:29)	(Detached)
+
+MCC:
+====
+[ssh paulius@87.80.154.227]
+sudo screen -x mcc   #(or bin/mcc)
+[detach CTRL+A then d]
+
+MORELLO DISPLAY:
+================
+[ssh paulius@87.80.154.227]
+sudo screen -x morello_display   #(or bin/display)
+[detach CTRL+A then d]
+
+
+===========================================================================================================================================================
 4 Nov
 
 1-1 Gavin. Report. logdata/2022-11-04/katlas_status_report
