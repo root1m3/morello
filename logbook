@@ -15,7 +15,13 @@ Paulious 1:1 - triage in search of cheriBSD-unable-to-install problem.
 https://github.com/root1m3/morello/blob/main/logdata/2022-11-07/board.txt
 
 
+Explored MCC and Display consoles USB0 and USB2
+Apparently everything is fine in the board.
 
+rebuild cherriBSD:
+./cheribuild.py -d --clean cheribsd-release-morello-purecap 
+
+Send result to paulius.michelevicius@digicatapult.org.uk 
 
 
 
