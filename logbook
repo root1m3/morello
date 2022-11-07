@@ -4,9 +4,9 @@ Morello LOG BOOK
 ===========================================================================================================================================================
 7 Nov
 
-Board Pictures:
-logdata/2022-11-07/morello_board.jpeg
-logdata/2022-11-07/conf_pin.jpg
+Board Pictures: https://github.com/root1m3/morello/blob/main/logdata/2022-11-07/
+    morello_board.jpeg
+    conf_pin.jpg
 
 ----
 Paulious 1:1 - triage in search of cheriBSD-unable-to-install problem.
@@ -28,7 +28,7 @@ Send result to paulius.michelevicius@digicatapult.org.uk
 ===========================================================================================================================================================
 4 Nov
 
-1-1 Gavin. Report. logdata/2022-11-04/katlas_status_report
+1-1 Gavin. Report. https://github.com/root1m3/morello/blob/main/logdata/2022-11-04/katlas_status_report
 
 
 ===========================================================================================================================================================
@@ -589,7 +589,7 @@ No valid device tree blob found
 
 ===========================================================================================================================================================
 20-sep:
-    [deliver] Submitted workplan /home/mm/DSbD/work_plan_katlas.pdf
+    [deliver] Submitted workplan https://github.com/root1m3/morello/blob/main/doc/work_plan_katlas.pdf
 
 ===========================================================================================================================================================
 19-sep: Added test case:
