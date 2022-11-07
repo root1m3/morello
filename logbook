@@ -4,14 +4,18 @@ Morello LOG BOOK
 ===========================================================================================================================================================
 7 Nov
 
-Paulious 1:1 - triage in search of cheriBSD-unable-to-install problem.
+Board Pictures:
+logdata/2022-11-07/morello_board.jpeg
+logdata/2022-11-07/conf_pin.jpg
 
+----
+Paulious 1:1 - triage in search of cheriBSD-unable-to-install problem.
+----
+
+=-------------------------------------------------------
 sudo-powered access to MORELLO BOARD, @KATLAS:
 
-sudo screen -ls
-There are screens on:
-	582726.morello_display	(07/11/22 12:56:29)	(Detached)
-	582724.mcc	(07/11/22 12:56:29)	(Detached)
+Board Pictures: https://github.com/root1m3/morello/tree/main/logdata/2022-11-07
 
 MCC:
 ====
@@ -24,13 +28,9 @@ MORELLO DISPLAY:
 [ssh paulius@87.80.154.227]
 sudo screen -x morello_display   #(or bin/display)
 [detach CTRL+A then d]
+=-------------------------------------------------------
 
 
-Board Pictures:
-logdata/2022-11-07/morello_board.jpeg
-logdata/2022-11-07/conf_pin.jpg
-
-https://github.com/root1m3/morello/tree/main/logdata/2022-11-07
 
 
 
