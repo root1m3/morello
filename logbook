@@ -1,6 +1,319 @@
 Morello LOG BOOK
 ================
 
+2,3,6 dec
+====================================================================================================================
+Continuing adaptation to FreeBSD of script bin/configure
+bin/configure
+bin/gen_vcs_git
+
+pkg64 install autotools gmake cryptopp
+
+bash
+gmake
+export CXX=c++
+
+git clone https://github.com/bitcoin-core/secp256k1.git
+pkg64 install autotools
+
+pkg64 install cryptopp --> didnt work (Not available for morello?)
+
+git clone https://github.com/weidai11/cryptopp.git
+clang-13: error: ABI 'purecap' is not supported without feature 'morello'
+make
+make install
+cd /usr/local/include
+ln -s cryptopp crypto++
+
+pkg64 install glib
+pkg-config finished with error
+
+pkg64 install devel/pkgconf
+
+replace in makefiles:
+PKG_CONFIG_PATH=/usr/local/lib/pkgconfig pkg-config --libs libsecp256k1
+pkg-config --libs libcryptopp
+
+pkg64 install base64
+
+
+cbs: pkg64 install rsync python
+
+
+26Nov
+====================================================================================================================
+Updating bin/configure
+sed -i
+
+
+
+
+20Nov
+====================================================================================================================
+
+chapter 8.
+https://ctsrd-cheri.github.io/cheribsd-getting-started/helloworld/index.html
+
+Toolchain installation
+pkg64 install llvm-base
+
+#include <stdio.h>
+
+int
+main(void)
+{
+    printf("Hello world\n");
+}
+
+root@cheripleb:~/devjob_2b4ed310 # cc -g -O2 -Wall -o helloworld helloworld.c
+root@cheripleb:~/devjob_2b4ed310 # ./helloworld
+Hello world
+
+
+pkg64 install gdb-cheri
+
+
+
+
+
+
+18 Nov
+====================================================================================================================
+[[problem unlocked!!]] cause: keyboard
+
+email to gavin with state update.
+
+
+CheriBSD Boot loader succeeded (without any HDMI or KEYBOARD plugged in)
+CheriBSD Installer succeeded.
+Screen console:
+
+-------------------------------------------------
+Welcome to CheriBSD!
+
+CheriBSD extends FreeBSD to implement memory protection and software
+compartmentalization features enabled by CHERI-extended CPUs.
+
+The CheriBSD front page:
+  https://www.cheribsd.org/
+
+We provide support via a mailing list:
+  https://www.cl.cam.ac.uk/research/security/ctsrd/cheri/cheri-lists.html
+
+And also via the CHERI-CPU Slack:
+  https://www.cl.cam.ac.uk/research/security/ctsrd/cheri/cheri-slack.html
+
+CheriBSD source may be found at:
+  https://github.com/CTSRD-CHERI/cheribsd/
+
+Find out more about about CHERI at https://cheri-cpu.org/
+
+WARNING: INVARIANTS kernel option defined, expect reduced performance
+WARNING: WITNESS kernel option defined, expect reduced performance
+root@cheripleb:~ # 
+
+-------------------------------------------------
+
+PLAN: Morello Plebble Node
+
+[PASS] Milestone 1:
+[PASS]      Install Operating System.
+
+[ ...]Milestone 0:
+[PASS]      Install git
+[PASS]      Clone source code
+[ ...]      Adapt devops scripts (made for debian Linux) to freeBSD
+[    ]      Install dev toolchain
+[    ]      Build and/or install dependencies: secp256k1
+[    ]      Build node software
+[    ]      Install and run.
+
+[    ]Milestone 1:
+[    ]      Design use case
+[    ]      Implement use case
+[    ]      Run use case
+
+[    ]Milestone 2:
+[    ]      Document findings.
+
+
+OS packages: ntp bash nano git 
+
+pkg and apt are very similar.
+execute bin/configure as bash bin/configure
+sh shell BSD and GNU standards conflict. sed -i
+
+sent file id_rsa.pub (ssh-keygen) to be granted git as dev@plebble.net
+
+
+
+
+17 Nov
+===========================================================================================================================================================
+1:1 Gavin, Darren, Konrad
+
+the firmare device is corrupt due to a mistake during the recording of freeBSD (dd to wrong device)
+
+we used parted and mkfs.fat to reconstruct the firmware
+
+apt install dosfstools -y
+lsblk -f
+apt install mkfs
+fdisk /dev/sdb
+apt install fdisk
+/sbin/fdisk /dev/sdb
+mkdir firmdrive
+/sbin/mkfs.vfat /dev/sdb1
+mount /dev/sdb1 firmdrive
+ls firmdrive/
+
+-----------------------------
+
+
+
+1.- FreeBSD completed a build with some errors but able to produce image
+2.- Unplugged the drive containing cherriBSD and plug in the host machine. (This apparently caused the board to enter in corrupt state I am unable to recover from)
+3.- dd the drive with the built image
+4.- Inserted in morello board.
+5.- Morello wont reboot, with oir without pendrive inserted.
+
+Debug> debug 1
+Debug> help
+
++ command --------------------+ function ---------------------------------+
+| DATE                        | Displays current date                     |
+| TIME                        | Displays current time                     |
+| RTC                         | Displays current RTC (MCC) time           |
+| DEBUG "0|1"                 | Enable(1) or Disable(0) debug printing    |
+| EXIT or QUIT                | Returns to main menu                      |
+| HELP or ?                   | displays this help                        |
+| WRITE_SPI "register" "data" | write word to spi register in PCC         |
+| READ_SPI "register"         | read spi register from PCC                |
+| SET_SPI "register" "data"   | set spi register in MCC to initial value  |
+| EXAM_SPI "register"         | read spi register in MCC                  |
+| REBOOT                      | Power cycle system and reboot             |
++-----------------------------+-------------------------------------------+
+Debug> reboot
+
+Powering up system...
+
+MCC to access SD card request acknowledged.
+ERROR: File not found config.txt
+Failed to read configuration file...
+Failed to read configuration file...
+
+Powering down...
+
+MCC to access SD card request acknowledged.
+
+SPI Write command to PCC: register 3 cmd 0xD003 tx data 0x1
+SPI Return data from PCC: register 3 cmd 0x2000 rx data 0x0
+
+Board powered down, use REBOOT to restart.
+ERROR: File not found config.txt
+Failed to read configuration file...
+Failed to read configuration file...
+Clear ULINK JTAG
+Debug> 
+
+-----------------------------------------------------------
+
+Google search for: 
+    Morello "File not found config.txt"
+gives 0 matches
+
+Cmd> usb_on
+Enabling debug USB...
+
+
+Cmd> usb_off
+Disabling debug USB...
+
+MCC to access SD card request acknowledged.
+
+dmesg> 
+[1115266.838920] usb 1-1.3: USB disconnect, device number 6
+
+usb_on
+recognized FreeBSD_Install as an unmounted device.
+
+BUT the freebsd stick is not inserted in the box. And the expected usb device was the firmware sdcard.
+
+Machine in Corrupt state.
+
+CMD reboot doesnt work
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+===========================================================================================================================================================
+14 Nov
+email to gavin:
+
+===========================================================================================================================================================
+8 Nov
+
+turned ON main supply after night off.
+
+MCC console:
+  USB_ON
+
+Host: dmesg -w
+[353100.555484] usb 1-1.3: new full-speed USB device number 80 using xhci_hcd
+[353100.661950] usb 1-1.3: New USB device found, idVendor=c251, idProduct=4003, bcdDevice= 1.00
+[353100.661957] usb 1-1.3: New USB device strings: Mfr=1, Product=2, SerialNumber=3
+[353100.661961] usb 1-1.3: Product: M1SDP
+[353100.661964] usb 1-1.3: Manufacturer: ARM Ltd
+[353100.661966] usb 1-1.3: SerialNumber: 500540322043
+[353100.669462] usb-storage 1-1.3:1.0: USB Mass Storage device detected
+[353100.669905] usb-storage 1-1.3:1.0: Quirks match for vid c251 pid 4003: 80
+[353100.670090] scsi host6: usb-storage 1-1.3:1.0
+[353101.680411] scsi 6:0:0:0: Direct-Access     ARM      M1SDP                 PQ: 0 ANSI: 0
+[353101.680950] sd 6:0:0:0: Attached scsi generic sg1 type 0
+[353101.681640] sd 6:0:0:0: [sdb] 3921920 512-byte logical blocks: (2.01 GB/1.87 GiB)
+[353101.682284] sd 6:0:0:0: [sdb] Write Protect is off
+[353101.682288] sd 6:0:0:0: [sdb] Mode Sense: 03 00 00 00
+[353101.682895] sd 6:0:0:0: [sdb] No Caching mode page found
+[353101.682901] sd 6:0:0:0: [sdb] Assuming drive cache: write through
+[353101.726877] Alternate GPT is invalid, using primary GPT.
+[353101.726881]  sdb: sdb1 sdb2
+[353101.729884] sd 6:0:0:0: [sdb] Attached SCSI removable disk
+[353104.575436] ufs: ufs was compiled with read-only support, can't be mounted as read-write
+[353104.576048] ufs: You didn't specify the type of your ufs filesystem
+                
+                mount -t ufs -o ufstype=sun|sunx86|44bsd|ufs2|5xbsd|old|hp|nextstep|nextstep-cd|openstep ...
+                
+                >>>WARNING<<< Wrong ufstype may corrupt your filesystem, default is ufstype=old
+[353104.579752] ufs: ufs_fill_super(): bad magic number
+
+
+The firmware sdcard seems corrupt.
+
+Abstract of the day:
+-------------------
+About the session with Paulius (DSbD tech expert) held past Monday 7.
+He spent deal of time trying to simply connect.
+accessed my host computer via ssh.
+installed minicom (I normally use screen)
+he did he didn't find anything wrong. Just confirmed CheriBSD wasn't booting.
+Then he gave me the recipe for building a new image of cherriBSD and put the thing on hold until it finishes.
+Several hours later I burned the USB stick with the image, plug into morello board,
+entered the MCC console to reboot.
+BUT here I found a new class of error that I didnt see before.
+It seems the firmware sdcard is in a corrupt state and I am unable to successfully exec commands.
+
+
 ===========================================================================================================================================================
 7 Nov
 
@@ -23,7 +336,42 @@ rebuild cherriBSD:
 
 Send result to paulius.michelevicius@digicatapult.org.uk 
 
+----------------
+Compilation produced file
+/home/paulius/cheri/output/cheribsd-release-morello-purecap/FreeBSD-14.0-CURRENT-arm64-aarch64c-memstick.img
 
+dd if=FreeBSD-14.0-CURRENT-arm64-aarch64c-memstick.img of=/dev/sdc bs=1048576
+
+MMC:
+Cmd> reboot
+
+Powering up system...
+
+MCC to access SD card request acknowledged.
+ERROR: File not found config.txt
+Failed to read configuration file...
+Failed to read configuration file...
+
+Powering down...
+
+MCC to access SD card request acknowledged.
+
+SPI Write command to PCC: register 3 cmd 0xD003 tx data 0x1
+SPI Return data from PCC: register 3 cmd 0x2000 rx data 0x0
+
+Board powered down, use REBOOT to restart.
+ERROR: File not found config.txt
+Failed to read configuration file...
+Failed to read configuration file...
+Clear ULINK JTAG
+
+
+
+MCC doesn't respond to reboot anymore!!
+
+USB_ON is no longer mounting /media/mm/M1SDP
+
+turned OFF the main supply.
 
 ===========================================================================================================================================================
 4 Nov

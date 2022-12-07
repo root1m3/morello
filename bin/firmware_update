@@ -5,8 +5,11 @@
 #src=""
 #src="backup_firm/XXXXX"
 
+
+
+
 upstreamgit="https://git.morello-project.org/morello/board-firmware.git"
-mnt="/media/mm/M1SDP"
+mnt=""
 
 function help_mount {
 	echo "  plug USB debug cable"
@@ -21,7 +24,7 @@ function help {
     echo ""
     echo "$0 <options> <src>"
     echo "examples:"
-    echo "$0 git"
+    echo "$0 --mnt <mnt> git"
     echo "      Backs-up current content and"
     echo "      writes the latest version from"
     echo "      $upstreamgit"
@@ -33,6 +36,7 @@ function help {
     echo ""
     echo "options"
     echo "--nobackup      Omits backing up current sdcard content"
+    echo "--nocheck       Omits checking current sdcard content"
 }
 
 if [[ -z $1 ]]; then
@@ -42,12 +46,20 @@ if [[ -z $1 ]]; then
 fi
 
 let backup=1
+let check=1
 while [[ true ]]; do
     opt=$1
     shift
     if [[ "_$opt" == "_--nobackup" ]]; then
         echo "nobackup flag"
         let backup=0
+        continue
+    elif [[ "_$opt" == "_--mnt" ]]; then
+        mnt=$1
+        shift
+        continue
+    elif [[ "_$opt" == "_--nocheck" ]]; then
+        let check=0
         continue
     else
         break
@@ -60,7 +72,15 @@ if [[ "_$src" == "_" ]]; then
     exit 1
 fi
 
+if [[ "_$mnt" == "_" ]]; then
+    echo "KO 88756 Missing mount point --mnt"
+    exit 1
+fi
 
+if [[ ! -d $mnt ]]; then
+    echo "KO 88746 mount point $mnt is not a directory"
+    exit 1
+fi
 
 # 1.- !src: download latest version from upstream git 
 #     src:  points to backup dir
@@ -86,10 +106,13 @@ fi
 # 2.- Verify the sdcard is mounted at /media/mm/M1SDP
 reltestfile="MB/HBI0364B/board.txt"
 testfile="${mnt}/${reltestfile}"
-if [[ ! -f ${testfile} ]]; then
-    help_mount
-    echo "KO 87985 $mnt not found"
-	exit 1
+
+if [[ $check -eq 1 ]]; then
+    if [[ ! -f ${testfile} ]]; then
+        help_mount
+        echo "KO 87985 $mnt not found"
+        exit 1
+    fi
 fi
 
 if [[ $backup -eq 1 ]]; then
@@ -105,20 +128,24 @@ if [[ $backup -eq 1 ]]; then
     fi
 
     # 4.- Verify Backup integrity by comparing hashes of a file in backup_firm, sdcard
-    h=`sha256sum backup_firm/${ts}_${h0}/${reltestfile}  | awk '{ print $1 }'`
-    if [[ "_$h0" != "_$h" ]]; then
-        echo "KO 78879 src and dst produce different hashes."
-        exit 1
+    if [[ $check -eq 1 ]]; then
+        h=`sha256sum backup_firm/${ts}_${h0}/${reltestfile}  | awk '{ print $1 }'`
+        if [[ "_$h0" != "_$h" ]]; then
+            echo "KO 78879 src and dst produce different hashes."
+            exit 1
+        fi
     fi
     echo "created backup of current sdcard in morello board at backup_firm/${ts}_${h}"
 fi
 
 # 5.- Verify sdcard and src have different versions
-nh=`sha256sum ${src}/${reltestfile} | awk '{ print $1 }'`
-if [[ "_$nh" == "_$h" ]]; then
-    cat ${src}/${reltestfile}
-    echo "KO 78819 it seems the host has already this version"
-    exit 1
+if [[ $check -eq 1 ]]; then
+    nh=`sha256sum ${src}/${reltestfile} | awk '{ print $1 }'`
+    if [[ "_$nh" == "_$h" ]]; then
+        cat ${src}/${reltestfile}
+        echo "KO 78819 it seems the host has already this version"
+        exit 1
+    fi
 fi
 
 # 6.- replacing content of sdcard using src
