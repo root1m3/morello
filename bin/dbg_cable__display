@@ -1,0 +1,6 @@
+#!/bin/bash
+
+echo "Entering TTY Morello display..."
+echo "screen -x morello_display"
+screen -x morello_display
+

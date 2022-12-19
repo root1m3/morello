@@ -1,0 +1,6 @@
+#!/bin/bash
+
+echo "Entering MCC Console..."
+echo "screen -x mcc"
+screen -x mcc
+

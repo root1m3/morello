@@ -1,0 +1,4 @@
+#!/bin/sh
+screen -d -m -S mcc /dev/ttyUSB0 115200
+screen -d -m -S morello_display /dev/ttyUSB2 115200
+

@@ -1,6 +1,231 @@
 Morello LOG BOOK
 ================
 
+19 Dec
+====================================================================================================================
+
+Theres a new version of cheriBSD! at https://download.cheribsd.org/releases/arm64/aarch64c
+Old:
+    cheribsd-memstick-arm64-aarch64c-22.05
+    cheribsd-memstick-arm64-aarch64c-22.05p1
+
+New:
+    cheribsd-memstick-arm64-aarch64c-22.12.img.xz
+
+
+host# 
+Plug USB stick.
+dmesg
+[2605317.598067] usb 1-7: new high-speed USB device number 40 using xhci_hcd
+[2605317.813101] usb 1-7: New USB device found, idVendor=13fe, idProduct=4300, bcdDevice= 1.00
+[2605317.813108] usb 1-7: New USB device strings: Mfr=1, Product=2, SerialNumber=3
+[2605317.813112] usb 1-7: Product: USB DISK 2.0
+[2605317.813115] usb 1-7: Manufacturer: Wilk
+[2605317.813118] usb 1-7: SerialNumber: 071C1CBF293AF657
+[2605317.818489] usb-storage 1-7:1.0: USB Mass Storage device detected
+[2605317.819115] scsi host9: usb-storage 1-7:1.0
+[2605319.561873] scsi 9:0:0:0: Direct-Access     Wilk     USB DISK 2.0     PMAP PQ: 0 ANSI: 4
+[2605319.562652] sd 9:0:0:0: Attached scsi generic sg3 type 0
+[2605319.563304] sd 9:0:0:0: [sde] 60628992 512-byte logical blocks: (31.0 GB/28.9 GiB)
+[2605319.564149] sd 9:0:0:0: [sde] Write Protect is off
+[2605319.564156] sd 9:0:0:0: [sde] Mode Sense: 23 00 00 00
+[2605319.564984] sd 9:0:0:0: [sde] No Caching mode page found
+[2605319.564995] sd 9:0:0:0: [sde] Assuming drive cache: write through
+[2605319.587632] GPT:Primary header thinks Alt. header is not at the end of the disk.
+[2605319.587636] GPT:1634332 != 60628991
+[2605319.587637] GPT:Alternate GPT header not at the end of the disk.
+[2605319.587639] GPT:1634332 != 60628991
+[2605319.587640] GPT: Use GNU Parted to correct GPT errors.
+>> [2605319.587647]  sde: sde1 sde2
+[2605319.591039] sd 9:0:0:0: [sde] Attached SCSI removable disk
+
+
+dev=/dev/sde
+url=https://download.cheribsd.org/releases/arm64/aarch64c/22.12/cheribsd-memstick-arm64-aarch64c-22.12.img.xz
+file=$(basename ${url})
+xfile=cheribsd-memstick-arm64-aarch64c-22.12.img
+wget ${url}
+sha256sum ${file}
+CCCCCC 87aae719ef06849ec03dc20a3268a81fda3d94e8bf3c4d9ce2db377fb452bdba  cheribsd-memstick-arm64-aarch64c-22.05p1.img.xz
+
+unxz ${file}
+dd if=${xfile} of=${dev} bs=1048576
+sync
+eject ${dev}
+
+MCC: reboot
+Morello Console:
+
+
+
+
+
+18 dec
+====================================================================================================================
+
+updated devjob to alpha-55
+
+pkg64c info --list-file libb64
+pkg64c install libb64
+
+
+https://github.com/GobySoft/dccl/issues/43
+
+
+----------------
+let nl=$(git diff --name-only | grep -v us/sdk/wallet/java/us/vcs.java | wc -l)
+
+linux:
+OK
+freebsd:
+bash: let: x=: syntax error: operand expected (error token is "=")
+let nl=$(git diff --name-only | grep -v us/sdk/wallet/java/us/vcs.java | wc -l | awk '{ print $1 }')
+OK
+-------------------
+
+// ------------base64 decoder - https://github.com/GobySoft/dccl/issues/43
+#if CFG_is_FreeBSD == 1
+    #include <cstdio>
+    #define BUFFERSIZE BUFSIZ
+#endif
+#include <b64/decode.h>
+// -/----------base64 decoder
+
+
+#if CFG_is_FreeBSD == 1
+    #include <machine/endian.h>
+#else
+    #include <endian.h>
+#endif
+
+
+root@cheripleb:~/devjob_2b4ed310/core0/us # pkg64 install ack
+Updating CheriBSD repository catalogue...
+Fetching meta.conf: 100%    163 B   0.2kB/s    00:01    
+Fetching packagesite.pkg: 100%    5 MiB   5.1MB/s    00:01    
+Processing entries: 100%
+CheriBSD repository update completed. 24494 packages processed.
+All repositories are up to date.
+pkg64: No packages available to install matching 'ack' have been found in the repositories
+
+--------------------------
+
+
+#ifdef __FreeBSD__
+#include <sys/socket.h>
+#endif
+
+ for ::socket
+
+--------------------------
+
+blob_reader_t.cpp:154:9: error: 
+no matching conversion for functional-style cast
+from 'chrono::nanoseconds' (aka 'duration<long long, ratio<1LL, 1000000000LL>>')
+to   'us::time_point' (aka 'time_point<std::chrono::system_clock>')
+o = time_point(chrono::nanoseconds(x));
+
+o = time_point(chrono::duration_cast<chrono::system_clock::duration>(chrono::nanoseconds(x)));
+
+-------------------------------
+
+
+In file included from cfg0.cpp:316:
+./command.h:76:24: error: use of undeclared identifier 'WEXITSTATUS'
+            exitcode = WEXITSTATUS(res);
+
+#ifdef __FreeBSD__
+#include <sys/wait.h>
+#endif
+
+
+-------------------------------
+
+#include <sstream> //<========== added
+
+#include <us/gov/crypto/types.h>
+
+#include "types.h"
+
+namespace us::gov::io {
+    using namespace std;    //<========== added
+    ...
+
+-------------------------------
+client.cpp:280:20: error: expected unqualified-id
+        auto o = ::ntohs(s->sin_port);
+                   ^
+/usr/include/netinet/in.h:122:18: note: expanded from macro 'ntohs'
+#define ntohs(x)        __ntohs(x)
+                        ^
+/usr/include/sys/_endian.h:82:20: note: expanded from macro '__ntohs'
+#define __ntohs(x)      (__bswap16(x))
+   
+::ntohs ==> ntohs
+-------------------------------
+
+
+There is no stdc++fs present in the system for clang.
+Only gcc installs /usr/local/lib/gcc8/libstdc++fs.a.
+With clang-8 build fails with missing library.
+
+-------------------------------
+thread_logger.cpp:109:11: warning: cast from provenance-free integer type to pointer type will give pointer that can not be dereferenced [-Wcheri-capability-misuse]
+    os << (void*)t;
+          ^
+
+#define print_stacktrace (void)sizeof
+----------------------------------
+
+MILESTONE: code compiles
+
+run core0 tests
+===============
+signals - CTRL-C doesn't work
+
+worked on a fix
+
+
+-------------------------------
+unplug eth
+plug again --> needs
+
+service netif restart
+
+
+--------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+16 dec
+====================================================================================================================
+
+Node Bootstrapping works scheduled in release_notes for the next version:
+
+alpha-55 -
+    * aarch64c new architecture integrated in the network deployment pipeline.
+    * FreeBSD, cheriBSD adaptation. First Node based on the new ARM processor:
+          UK Research & Innovation
+          DSbD DigitalSecurebyDesign 
+          Digital Catapult - Tech Prototype: ARM Morello board. SoC IntegratING CHERI spec (Cambridge University)
+          Campartimentalization: Fat Pointers encoding capabilities can be leveraged by this new arch: aarch64c
+
+14 dec
+====================================================================================================================
+
+    Meeting. Slideshow about Compartiments and Fat pointers
+
+
 2,3,6 dec
 ====================================================================================================================
 Continuing adaptation to FreeBSD of script bin/configure
