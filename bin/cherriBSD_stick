@@ -1,16 +1,23 @@
 #!/bin/bash
 
 #https://www.cheribsd.org/
-echo "plug memstick"
-echo -n "[yes]: "
+echo -n "plug memstick [yes]: "
 read a
 if [[ "_$a" != "_yes" ]]; then
     >&2 echo "KO 33092"
     exit 1
 fi
-dmesg
-echo "Input 'I am about to erase the device /dev/$dev
+sudo dmesg
+lsblk
+echo "Input /dev/<name> (e.g. sde)"
 read dev
+
+echo "Input \"erase /dev/$dev\""
+read x
+if [[ "_$x" != "_erase /dev/$dev" ]]; then
+    >&2 echo "KO 35492"
+    exit 1
+fi
 
 
 
@@ -24,6 +31,7 @@ cherribsd_url="https://download.cheribsd.org/releases/arm64/aarch64c/${cherribsd
 if [[ ! -f ${cherribsd_img} ]]; then
     if [[ ! -f ${cherribsd_file} ]]; then
         wget ${cherribsd_url}
+        sha256sum ${cherribsd_file}
     fi
 
     if [[ ! -f ${cherribsd_img} ]]; then
@@ -32,24 +40,24 @@ if [[ ! -f ${cherribsd_img} ]]; then
 fi
 
 echo "record CheriBSD Boot USB drive:"
-echo "dd if=${cherribsd_img} of=/dev/? bs=1048576"
-echo "sync"
+#echo "dd if=${cherribsd_img} of=/dev/? bs=1048576"
+#echo "sync"
 
-dev=/dev/sde
-url=https://download.cheribsd.org/releases/arm64/aarch64c/22.12/cheribsd-memstick-arm64-aarch64c-22.12.img.xz
-file=$(basename ${url})
-xfile=cheribsd-memstick-arm64-aarch64c-22.12.img
-wget ${url}
-sha256sum ${file}
-CCCCCC 87aae719ef06849ec03dc20a3268a81fda3d94e8bf3c4d9ce2db377fb452bdba  cheribsd-memstick-arm64-aarch64c-22.05p1.img.xz
+#dev=/dev/sde
+#url=https://download.cheribsd.org/releases/arm64/aarch64c/22.12/cheribsd-memstick-arm64-aarch64c-22.12.img.xz
+#file=$(basename ${url})
+#xfile=cheribsd-memstick-arm64-aarch64c-22.12.img
+#wget ${url}
+#CCCCCC 87aae719ef06849ec03dc20a3268a81fda3d94e8bf3c4d9ce2db377fb452bdba  cheribsd-memstick-arm64-aarch64c-22.05p1.img.xz
 
-unxz ${file}
-dd if=${xfile} of=${dev} bs=1048576
-sync
-eject ${dev}
+#unxz ${file}
+sudo dd if=${cherribsd_img} of=/dev/${dev} bs=1048576
+sudo sync
+sudo eject /dev/${dev}
 
-MCC: reboot
-Morello Console:
+#MCC: reboot
+#Morello Console:
 
 
 exit 0
+
