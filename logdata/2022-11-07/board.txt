@@ -1,0 +1,16 @@
+sudo-powered access to MORELLO BOARD, @KATLAS:
+
+Board Pictures: https://github.com/root1m3/morello/tree/main/logdata/2022-11-07
+
+MCC:
+====
+[ssh paulius@87.80.154.227]
+sudo screen -x mcc   #(or bin/mcc)
+[detach CTRL+A then d]
+
+MORELLO DISPLAY:
+================
+[ssh paulius@87.80.154.227]
+sudo screen -x morello_display   #(or bin/display)
+[detach CTRL+A then d]
+

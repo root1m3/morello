@@ -1,6 +1,612 @@
 Morello LOG BOOK
 ================
 
+20 Dec
+====================================================================================================================
+
+
+19 Dec
+====================================================================================================================
+
+Theres a new version of cheriBSD! at https://download.cheribsd.org/releases/arm64/aarch64c
+Old:
+    cheribsd-memstick-arm64-aarch64c-22.05
+    cheribsd-memstick-arm64-aarch64c-22.05p1
+
+New:
+    cheribsd-memstick-arm64-aarch64c-22.12.img.xz
+
+
+host# 
+Plug USB stick.
+dmesg
+[2605317.598067] usb 1-7: new high-speed USB device number 40 using xhci_hcd
+[2605317.813101] usb 1-7: New USB device found, idVendor=13fe, idProduct=4300, bcdDevice= 1.00
+[2605317.813108] usb 1-7: New USB device strings: Mfr=1, Product=2, SerialNumber=3
+[2605317.813112] usb 1-7: Product: USB DISK 2.0
+[2605317.813115] usb 1-7: Manufacturer: Wilk
+[2605317.813118] usb 1-7: SerialNumber: 071C1CBF293AF657
+[2605317.818489] usb-storage 1-7:1.0: USB Mass Storage device detected
+[2605317.819115] scsi host9: usb-storage 1-7:1.0
+[2605319.561873] scsi 9:0:0:0: Direct-Access     Wilk     USB DISK 2.0     PMAP PQ: 0 ANSI: 4
+[2605319.562652] sd 9:0:0:0: Attached scsi generic sg3 type 0
+[2605319.563304] sd 9:0:0:0: [sde] 60628992 512-byte logical blocks: (31.0 GB/28.9 GiB)
+[2605319.564149] sd 9:0:0:0: [sde] Write Protect is off
+[2605319.564156] sd 9:0:0:0: [sde] Mode Sense: 23 00 00 00
+[2605319.564984] sd 9:0:0:0: [sde] No Caching mode page found
+[2605319.564995] sd 9:0:0:0: [sde] Assuming drive cache: write through
+[2605319.587632] GPT:Primary header thinks Alt. header is not at the end of the disk.
+[2605319.587636] GPT:1634332 != 60628991
+[2605319.587637] GPT:Alternate GPT header not at the end of the disk.
+[2605319.587639] GPT:1634332 != 60628991
+[2605319.587640] GPT: Use GNU Parted to correct GPT errors.
+>> [2605319.587647]  sde: sde1 sde2
+[2605319.591039] sd 9:0:0:0: [sde] Attached SCSI removable disk
+
+
+dev=/dev/sde
+url=https://download.cheribsd.org/releases/arm64/aarch64c/22.12/cheribsd-memstick-arm64-aarch64c-22.12.img.xz
+file=$(basename ${url})
+xfile=cheribsd-memstick-arm64-aarch64c-22.12.img
+wget ${url}
+sha256sum ${file}
+CCCCCC 87aae719ef06849ec03dc20a3268a81fda3d94e8bf3c4d9ce2db377fb452bdba  cheribsd-memstick-arm64-aarch64c-22.05p1.img.xz
+
+unxz ${file}
+dd if=${xfile} of=${dev} bs=1048576
+sync
+eject ${dev}
+
+MCC: reboot
+Morello Console:
+
+
+
+
+
+18 dec
+====================================================================================================================
+
+updated devjob to alpha-55
+
+pkg64c info --list-file libb64
+pkg64c install libb64
+
+
+https://github.com/GobySoft/dccl/issues/43
+
+
+----------------
+let nl=$(git diff --name-only | grep -v us/sdk/wallet/java/us/vcs.java | wc -l)
+
+linux:
+OK
+freebsd:
+bash: let: x=: syntax error: operand expected (error token is "=")
+let nl=$(git diff --name-only | grep -v us/sdk/wallet/java/us/vcs.java | wc -l | awk '{ print $1 }')
+OK
+-------------------
+
+// ------------base64 decoder - https://github.com/GobySoft/dccl/issues/43
+#if CFG_is_FreeBSD == 1
+    #include <cstdio>
+    #define BUFFERSIZE BUFSIZ
+#endif
+#include <b64/decode.h>
+// -/----------base64 decoder
+
+
+#if CFG_is_FreeBSD == 1
+    #include <machine/endian.h>
+#else
+    #include <endian.h>
+#endif
+
+
+root@cheripleb:~/devjob_2b4ed310/core0/us # pkg64 install ack
+Updating CheriBSD repository catalogue...
+Fetching meta.conf: 100%    163 B   0.2kB/s    00:01    
+Fetching packagesite.pkg: 100%    5 MiB   5.1MB/s    00:01    
+Processing entries: 100%
+CheriBSD repository update completed. 24494 packages processed.
+All repositories are up to date.
+pkg64: No packages available to install matching 'ack' have been found in the repositories
+
+--------------------------
+
+
+#ifdef __FreeBSD__
+#include <sys/socket.h>
+#endif
+
+ for ::socket
+
+--------------------------
+
+blob_reader_t.cpp:154:9: error: 
+no matching conversion for functional-style cast
+from 'chrono::nanoseconds' (aka 'duration<long long, ratio<1LL, 1000000000LL>>')
+to   'us::time_point' (aka 'time_point<std::chrono::system_clock>')
+o = time_point(chrono::nanoseconds(x));
+
+o = time_point(chrono::duration_cast<chrono::system_clock::duration>(chrono::nanoseconds(x)));
+
+-------------------------------
+
+
+In file included from cfg0.cpp:316:
+./command.h:76:24: error: use of undeclared identifier 'WEXITSTATUS'
+            exitcode = WEXITSTATUS(res);
+
+#ifdef __FreeBSD__
+#include <sys/wait.h>
+#endif
+
+
+-------------------------------
+
+#include <sstream> //<========== added
+
+#include <us/gov/crypto/types.h>
+
+#include "types.h"
+
+namespace us::gov::io {
+    using namespace std;    //<========== added
+    ...
+
+-------------------------------
+client.cpp:280:20: error: expected unqualified-id
+        auto o = ::ntohs(s->sin_port);
+                   ^
+/usr/include/netinet/in.h:122:18: note: expanded from macro 'ntohs'
+#define ntohs(x)        __ntohs(x)
+                        ^
+/usr/include/sys/_endian.h:82:20: note: expanded from macro '__ntohs'
+#define __ntohs(x)      (__bswap16(x))
+   
+::ntohs ==> ntohs
+-------------------------------
+
+
+There is no stdc++fs present in the system for clang.
+Only gcc installs /usr/local/lib/gcc8/libstdc++fs.a.
+With clang-8 build fails with missing library.
+
+-------------------------------
+thread_logger.cpp:109:11: warning: cast from provenance-free integer type to pointer type will give pointer that can not be dereferenced [-Wcheri-capability-misuse]
+    os << (void*)t;
+          ^
+
+#define print_stacktrace (void)sizeof
+----------------------------------
+
+MILESTONE: code compiles
+
+run core0 tests
+===============
+signals - CTRL-C doesn't work
+
+worked on a fix
+
+
+-------------------------------
+unplug eth
+plug again --> needs
+
+service netif restart
+
+
+--------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+16 dec
+====================================================================================================================
+
+Node Bootstrapping works scheduled in release_notes for the next version:
+
+alpha-55 -
+    * aarch64c new architecture integrated in the network deployment pipeline.
+    * FreeBSD, cheriBSD adaptation. First Node based on the new ARM processor:
+          UK Research & Innovation
+          DSbD DigitalSecurebyDesign 
+          Digital Catapult - Tech Prototype: ARM Morello board. SoC IntegratING CHERI spec (Cambridge University)
+          Campartimentalization: Fat Pointers encoding capabilities can be leveraged by this new arch: aarch64c
+
+14 dec
+====================================================================================================================
+
+    Meeting. Slideshow about Compartiments and Fat pointers
+
+
+2,3,6 dec
+====================================================================================================================
+Continuing adaptation to FreeBSD of script bin/configure
+bin/configure
+bin/gen_vcs_git
+
+pkg64 install autotools gmake cryptopp
+
+bash
+gmake
+export CXX=c++
+
+git clone https://github.com/bitcoin-core/secp256k1.git
+pkg64 install autotools
+
+pkg64 install cryptopp --> didnt work (Not available for morello?)
+
+git clone https://github.com/weidai11/cryptopp.git
+clang-13: error: ABI 'purecap' is not supported without feature 'morello'
+make
+make install
+cd /usr/local/include
+ln -s cryptopp crypto++
+
+pkg64 install glib
+pkg-config finished with error
+
+pkg64 install devel/pkgconf
+
+replace in makefiles:
+PKG_CONFIG_PATH=/usr/local/lib/pkgconfig pkg-config --libs libsecp256k1
+pkg-config --libs libcryptopp
+
+pkg64 install base64
+
+
+cbs: pkg64 install rsync python
+
+
+26Nov
+====================================================================================================================
+Updating bin/configure
+sed -i
+
+
+
+
+20Nov
+====================================================================================================================
+
+chapter 8.
+https://ctsrd-cheri.github.io/cheribsd-getting-started/helloworld/index.html
+
+Toolchain installation
+pkg64 install llvm-base
+
+#include <stdio.h>
+
+int
+main(void)
+{
+    printf("Hello world\n");
+}
+
+root@cheripleb:~/devjob_2b4ed310 # cc -g -O2 -Wall -o helloworld helloworld.c
+root@cheripleb:~/devjob_2b4ed310 # ./helloworld
+Hello world
+
+
+pkg64 install gdb-cheri
+
+
+
+
+
+
+18 Nov
+====================================================================================================================
+[[problem unlocked!!]] cause: keyboard
+
+email to gavin with state update.
+
+
+CheriBSD Boot loader succeeded (without any HDMI or KEYBOARD plugged in)
+CheriBSD Installer succeeded.
+Screen console:
+
+-------------------------------------------------
+Welcome to CheriBSD!
+
+CheriBSD extends FreeBSD to implement memory protection and software
+compartmentalization features enabled by CHERI-extended CPUs.
+
+The CheriBSD front page:
+  https://www.cheribsd.org/
+
+We provide support via a mailing list:
+  https://www.cl.cam.ac.uk/research/security/ctsrd/cheri/cheri-lists.html
+
+And also via the CHERI-CPU Slack:
+  https://www.cl.cam.ac.uk/research/security/ctsrd/cheri/cheri-slack.html
+
+CheriBSD source may be found at:
+  https://github.com/CTSRD-CHERI/cheribsd/
+
+Find out more about about CHERI at https://cheri-cpu.org/
+
+WARNING: INVARIANTS kernel option defined, expect reduced performance
+WARNING: WITNESS kernel option defined, expect reduced performance
+root@cheripleb:~ # 
+
+-------------------------------------------------
+
+PLAN: Morello Plebble Node
+
+[PASS] Milestone 1:
+[PASS]      Install Operating System.
+
+[ ...]Milestone 0:
+[PASS]      Install git
+[PASS]      Clone source code
+[ ...]      Adapt devops scripts (made for debian Linux) to freeBSD
+[    ]      Install dev toolchain
+[    ]      Build and/or install dependencies: secp256k1
+[    ]      Build node software
+[    ]      Install and run.
+
+[    ]Milestone 1:
+[    ]      Design use case
+[    ]      Implement use case
+[    ]      Run use case
+
+[    ]Milestone 2:
+[    ]      Document findings.
+
+
+OS packages: ntp bash nano git 
+
+pkg and apt are very similar.
+execute bin/configure as bash bin/configure
+sh shell BSD and GNU standards conflict. sed -i
+
+sent file id_rsa.pub (ssh-keygen) to be granted git as dev@plebble.net
+
+
+
+
+17 Nov
+===========================================================================================================================================================
+1:1 Gavin, Darren, Konrad
+
+the firmare device is corrupt due to a mistake during the recording of freeBSD (dd to wrong device)
+
+we used parted and mkfs.fat to reconstruct the firmware
+
+apt install dosfstools -y
+lsblk -f
+apt install mkfs
+fdisk /dev/sdb
+apt install fdisk
+/sbin/fdisk /dev/sdb
+mkdir firmdrive
+/sbin/mkfs.vfat /dev/sdb1
+mount /dev/sdb1 firmdrive
+ls firmdrive/
+
+-----------------------------
+
+
+
+1.- FreeBSD completed a build with some errors but able to produce image
+2.- Unplugged the drive containing cherriBSD and plug in the host machine. (This apparently caused the board to enter in corrupt state I am unable to recover from)
+3.- dd the drive with the built image
+4.- Inserted in morello board.
+5.- Morello wont reboot, with oir without pendrive inserted.
+
+Debug> debug 1
+Debug> help
+
++ command --------------------+ function ---------------------------------+
+| DATE                        | Displays current date                     |
+| TIME                        | Displays current time                     |
+| RTC                         | Displays current RTC (MCC) time           |
+| DEBUG "0|1"                 | Enable(1) or Disable(0) debug printing    |
+| EXIT or QUIT                | Returns to main menu                      |
+| HELP or ?                   | displays this help                        |
+| WRITE_SPI "register" "data" | write word to spi register in PCC         |
+| READ_SPI "register"         | read spi register from PCC                |
+| SET_SPI "register" "data"   | set spi register in MCC to initial value  |
+| EXAM_SPI "register"         | read spi register in MCC                  |
+| REBOOT                      | Power cycle system and reboot             |
++-----------------------------+-------------------------------------------+
+Debug> reboot
+
+Powering up system...
+
+MCC to access SD card request acknowledged.
+ERROR: File not found config.txt
+Failed to read configuration file...
+Failed to read configuration file...
+
+Powering down...
+
+MCC to access SD card request acknowledged.
+
+SPI Write command to PCC: register 3 cmd 0xD003 tx data 0x1
+SPI Return data from PCC: register 3 cmd 0x2000 rx data 0x0
+
+Board powered down, use REBOOT to restart.
+ERROR: File not found config.txt
+Failed to read configuration file...
+Failed to read configuration file...
+Clear ULINK JTAG
+Debug> 
+
+-----------------------------------------------------------
+
+Google search for: 
+    Morello "File not found config.txt"
+gives 0 matches
+
+Cmd> usb_on
+Enabling debug USB...
+
+
+Cmd> usb_off
+Disabling debug USB...
+
+MCC to access SD card request acknowledged.
+
+dmesg> 
+[1115266.838920] usb 1-1.3: USB disconnect, device number 6
+
+usb_on
+recognized FreeBSD_Install as an unmounted device.
+
+BUT the freebsd stick is not inserted in the box. And the expected usb device was the firmware sdcard.
+
+Machine in Corrupt state.
+
+CMD reboot doesnt work
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+===========================================================================================================================================================
+14 Nov
+email to gavin:
+
+===========================================================================================================================================================
+8 Nov
+
+turned ON main supply after night off.
+
+MCC console:
+  USB_ON
+
+Host: dmesg -w
+[353100.555484] usb 1-1.3: new full-speed USB device number 80 using xhci_hcd
+[353100.661950] usb 1-1.3: New USB device found, idVendor=c251, idProduct=4003, bcdDevice= 1.00
+[353100.661957] usb 1-1.3: New USB device strings: Mfr=1, Product=2, SerialNumber=3
+[353100.661961] usb 1-1.3: Product: M1SDP
+[353100.661964] usb 1-1.3: Manufacturer: ARM Ltd
+[353100.661966] usb 1-1.3: SerialNumber: 500540322043
+[353100.669462] usb-storage 1-1.3:1.0: USB Mass Storage device detected
+[353100.669905] usb-storage 1-1.3:1.0: Quirks match for vid c251 pid 4003: 80
+[353100.670090] scsi host6: usb-storage 1-1.3:1.0
+[353101.680411] scsi 6:0:0:0: Direct-Access     ARM      M1SDP                 PQ: 0 ANSI: 0
+[353101.680950] sd 6:0:0:0: Attached scsi generic sg1 type 0
+[353101.681640] sd 6:0:0:0: [sdb] 3921920 512-byte logical blocks: (2.01 GB/1.87 GiB)
+[353101.682284] sd 6:0:0:0: [sdb] Write Protect is off
+[353101.682288] sd 6:0:0:0: [sdb] Mode Sense: 03 00 00 00
+[353101.682895] sd 6:0:0:0: [sdb] No Caching mode page found
+[353101.682901] sd 6:0:0:0: [sdb] Assuming drive cache: write through
+[353101.726877] Alternate GPT is invalid, using primary GPT.
+[353101.726881]  sdb: sdb1 sdb2
+[353101.729884] sd 6:0:0:0: [sdb] Attached SCSI removable disk
+[353104.575436] ufs: ufs was compiled with read-only support, can't be mounted as read-write
+[353104.576048] ufs: You didn't specify the type of your ufs filesystem
+                
+                mount -t ufs -o ufstype=sun|sunx86|44bsd|ufs2|5xbsd|old|hp|nextstep|nextstep-cd|openstep ...
+                
+                >>>WARNING<<< Wrong ufstype may corrupt your filesystem, default is ufstype=old
+[353104.579752] ufs: ufs_fill_super(): bad magic number
+
+
+The firmware sdcard seems corrupt.
+
+Abstract of the day:
+-------------------
+About the session with Paulius (DSbD tech expert) held past Monday 7.
+He spent deal of time trying to simply connect.
+accessed my host computer via ssh.
+installed minicom (I normally use screen)
+he did he didn't find anything wrong. Just confirmed CheriBSD wasn't booting.
+Then he gave me the recipe for building a new image of cherriBSD and put the thing on hold until it finishes.
+Several hours later I burned the USB stick with the image, plug into morello board,
+entered the MCC console to reboot.
+BUT here I found a new class of error that I didnt see before.
+It seems the firmware sdcard is in a corrupt state and I am unable to successfully exec commands.
+
+
+===========================================================================================================================================================
+7 Nov
+
+Board Pictures: https://github.com/root1m3/morello/blob/main/logdata/2022-11-07/
+    morello_board.jpeg
+    conf_pin.jpg
+
+----
+Paulious 1:1 - triage in search of cheriBSD-unable-to-install problem.
+----
+
+https://github.com/root1m3/morello/blob/main/logdata/2022-11-07/board.txt
+
+
+Explored MCC and Display consoles USB0 and USB2
+Apparently everything is fine in the board.
+
+rebuild cherriBSD:
+./cheribuild.py -d --clean cheribsd-release-morello-purecap 
+
+Send result to paulius.michelevicius@digicatapult.org.uk 
+
+----------------
+Compilation produced file
+/home/paulius/cheri/output/cheribsd-release-morello-purecap/FreeBSD-14.0-CURRENT-arm64-aarch64c-memstick.img
+
+dd if=FreeBSD-14.0-CURRENT-arm64-aarch64c-memstick.img of=/dev/sdc bs=1048576
+
+MMC:
+Cmd> reboot
+
+Powering up system...
+
+MCC to access SD card request acknowledged.
+ERROR: File not found config.txt
+Failed to read configuration file...
+Failed to read configuration file...
+
+Powering down...
+
+MCC to access SD card request acknowledged.
+
+SPI Write command to PCC: register 3 cmd 0xD003 tx data 0x1
+SPI Return data from PCC: register 3 cmd 0x2000 rx data 0x0
+
+Board powered down, use REBOOT to restart.
+ERROR: File not found config.txt
+Failed to read configuration file...
+Failed to read configuration file...
+Clear ULINK JTAG
+
+
+
+MCC doesn't respond to reboot anymore!!
+
+USB_ON is no longer mounting /media/mm/M1SDP
+
+turned OFF the main supply.
+
+===========================================================================================================================================================
+4 Nov
+
+1-1 Gavin. Report. https://github.com/root1m3/morello/blob/main/logdata/2022-11-04/katlas_status_report
+
 
 ===========================================================================================================================================================
 4 Nov
@@ -391,6 +997,10 @@ Fatal error (in target qemu): Could not find smbd -> QEMU SMB shares networking 
 
 ===========================================================================================================================================================
 26-sep:
+
+
+
+
     MCC console:    screen /dev/ttyUSB0 115200
     Morello console: screen /dev/ttyUSB2 115200
 
@@ -567,7 +1177,7 @@ No valid device tree blob found
 
 ===========================================================================================================================================================
 20-sep:
-    [deliver] Submitted workplan /home/mm/DSbD/work_plan_katlas.pdf
+    [deliver] Submitted workplan https://github.com/root1m3/morello/blob/main/doc/work_plan_katlas.pdf
 
 ===========================================================================================================================================================
 19-sep: Added test case:

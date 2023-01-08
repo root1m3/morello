@@ -1,0 +1,71 @@
+====================================================
+====================================================
+KATLAS progress:
+    [DONE] plebble codebase readiness for LLVM C++ compiler
+    [DONE] created a few maintenance/helper utilities for Morello's firmware and build helpers: https://github.com/root1m3/morello/tree/main/bin
+    [FAIL] Operating System installation. See below.
+    [wait] build plebble on Morello board
+    [wait] run a plebble node on Morello
+    [wait] work on taking advantage from capabilities, dev and test.
+    [wait] work on demo
+=====================================================
+=====================================================
+
+[FAIL] Operating System installation.
+
+Procedures followed with the intention of setting up an operating system in the morello board:
+
+=1/3========================== CherriBSD ================================
+    SOURCE: https://ctsrd-cheri.github.io/cheribsd-getting-started/cover/index.html
+           The document describes CheriBSD as of the 22.05p1 release
+
+           Step 5: Getting CheriBSD
+[OK]             Memstick images - download cheribsd-memstick-arm64-aarch64c-22.05p1.img.xz
+
+            Step 6: CheriBSD on an Arm Morello board.
+[OK]            Step 6.1: Accessing the Morello console                    
+[OK]            Step 6.2: Upgrading the Morello firmware
+                Step 6.3: Installing on a Morello board
+                    Section: Starting the boot
+[FAIL]              paragraph: You will eventually be prompted to select a terminal emulation type
+===>                obtained:                        
+                        Loading kernel...
+                        /boot/kernel/kernel text=0x2e0 text=0x858830 text=0x2494f8 text=0x30 data=0x2631
+                        e0 data=0x0+0x357d40 0x8+0x11ba28+0x8+0xe9167-
+                        Loading configured modules...
+                        can't find '/boot/entropy'
+                        can't find '/etc/hostid'
+                        No valid device tree blob found!
+                        WARNING! Trying to fire up the kernel, but no device tree blob found!
+                        EFI framebuffer information:
+                        addr, size     0xfe000000, 0x7e9000
+                        dimensions     1920 x 1080
+                        stride         1920
+                        masks          0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000
+                        <FREEZES HERE>
+
+            Step 6.4: Morello known issues
+                + HDMI.  debug console operation via screen command, not using HDMI physical monitor.
+
+=2/3========================== qEmu ================================
+    SOURCE: https://ctsrd-cheri.github.io/cheribsd-getting-started/building/index.html
+    No prebuilt live images seem to be available for download at https://www.cheribsd.org/
+
+[OK]    Step 1: Checking out cheribuild
+[FAIL]  Step 1.1: Building and running CheriBSD/RISC-V in QEMU
+
+    ./cheribuild.py --qemu/no-use-smbd run-riscv64-purecap -d
+    Fatal error (in target gdb-riscv64-hybrid-for-purecap-rootfs): Command `nice gmake -j8 all-binutils` failed with non-zero exit code 2
+    tested fail on debian unstable host.
+
+
+=3/3========================== busybox ================================
+    SOURCE: https://git.morello-project.org/morello/docs/-/blob/morello/mainline/user-guide.rst#ubuntu-distribution
+[OK]    Step 2: Host prerequisites for a validated build environment
+[OK]    Step 3: Syncing the Source Code
+        Step 4: Building the Source Code
+            Step 4.1: Check dependencies        
+            Step 4.2: Building the Software Stack
+[FAIL]         compilation error missing include.
+               tested fail on 2 hosts: debian unstable, debian stable
+
