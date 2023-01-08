@@ -1,6 +1,77 @@
 Morello LOG BOOK
 ================
 
+8 jan
+==================================================================================================================
+Ethernet Issue.
+===============
+
+
+root@roston:/home/root1m3/xxtt# wget https://download.cheribsd.org/releases/arm64/aarch64c/22.12/cheribsd-memstick-arm64-aarch64c-22.12.img.xz
+--2023-01-08 10:21:25--  https://download.cheribsd.org/releases/arm64/aarch64c/22.12/cheribsd-memstick-arm64-aarch64c-22.12.img.xz
+Resolving download.cheribsd.org (download.cheribsd.org)... 2001:630:212:2a8::80:d36, 128.232.18.152
+Connecting to download.cheribsd.org (download.cheribsd.org)|2001:630:212:2a8::80:d36|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 652686560 (622M) [application/octet-stream]
+Saving to: ‘cheribsd-memstick-arm64-aarch64c-22.12.img.xz’
+
+cheribsd-memstick-arm64-aarch64c-22.12.i 100%[===============================================================================>] 622.45M  3.28MB/s    in 2m 54s  
+
+2023-01-08 10:24:19 (3.58 MB/s) - ‘cheribsd-memstick-arm64-aarch64c-22.12.img.xz’ saved [652686560/652686560]
+
+root@roston:/home/root1m3/xxtt# sha256sum  cheribsd-memstick-arm64-aarch64c-22.12.img.xz 
+494c1f1b93b160a6754c4611368360238b36f78ee1e66c55d5844cb915c87133  cheribsd-memstick-arm64-aarch64c-22.12.img.xz
+
+
+root@roston:/home/root1m3/morello# sha256sum  cheribsd-memstick-arm64-aarch64c-22.12.img.xz 
+494c1f1b93b160a6754c4611368360238b36f78ee1e66c55d5844cb915c87133  cheribsd-memstick-arm64-aarch64c-22.12.img.xz
+
+
+CheriBSD new version has been announced by mail.
+Binary is the same.
+
+Shut down morello. Reinstall OS
+-------------------------------
+MCC console
+| RESET                     | Reset Board using CB_nRST                 |
+reset
+Warning: User reset unavailable. USERRST set to False.
+
+never mind.
+
+IOFPGA_VERSION
+IOFPGA Version: 220126
+
+never mind.
+
+reboot
+
+Boot from USB Stick 22.12: FAIL DHCP
+
+logdata/2023-01-08/boot_cheribsd_22.12/Screenshot from 2023-01-08 15-
+
+
+=====================================================================
+
+Trying previous version CheriBSD:cheribsd-memstick-arm64-aarch64c-22.05p1.img
+root@roston:/home/root1m3/morello# sha256sum cheribsd-memstick-arm64-aarch64c-22.05p1.img
+7504bea10c405725432c202491142e683084db72dbfa33cd88c21e204cee44e7  cheribsd-memstick-arm64-aarch64c-22.05p1.img
+
+
+cherribsd_ver="22.05p1"
+bin/cherriBSD_stick
+
+Input /dev/<name> (e.g. sde)
+sdg
+Input "erase /dev/sdg"
+erase /dev/sdg   
+record CheriBSD Boot USB drive:
+
+
+
+
+
+
 
 
 
