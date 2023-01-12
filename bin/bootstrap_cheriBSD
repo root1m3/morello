@@ -1,0 +1,5 @@
+#!/bin/sh
+
+pkg64 install llvm-base
+pkg64 install gdb-cheri
+pkg64c install libb64

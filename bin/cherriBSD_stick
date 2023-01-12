@@ -21,9 +21,9 @@ fi
 
 
 
-#cherribsd_ver="22.12"
+cherribsd_ver="22.12"
 #cherribsd_ver="22.05"
-cherribsd_ver="22.05p1"
+#cherribsd_ver="22.05p1"
 cherribsd_img="cheribsd-memstick-arm64-aarch64c-${cherribsd_ver}.img"
 cherribsd_file="${cherribsd_img}.xz"
 cherribsd_url="https://download.cheribsd.org/releases/arm64/aarch64c/${cherribsd_ver}/${cherribsd_file}"

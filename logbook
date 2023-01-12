@@ -1,5 +1,329 @@
 Morello LOG BOOK
 ================
+12jan
+==================================================================================================================
+Installed new PCI Ethernet card.
+
+
+pciconf -lv
+
+none4@pci0:5:0:0: class=0x020000 rev=0x05 hdr=0x00 vendor=0x10ec device=0x8125 subvendor=0x10ec subdevice=0x8125
+    vendor     = 'Realtek Semiconductor Co., Ltd.'
+    device     = 'RTL8125 2.5GbE Controller'
+    class      = network
+    subclass   = ethernet
+
+re0@pci0:7:0:0: class=0x020000 rev=0x0c hdr=0x00 vendor=0x10ec device=0x8168 subvendor=0x10ec subdevice=0x0123
+    vendor     = 'Realtek Semiconductor Co., Ltd.'
+    device     = 'RTL8111/8168/8411 PCI Express Gigabit Ethernet Controller'
+    class      = network
+    subclass   = ethernet
+
+reboot
+
+
+UEFI:
+                                                                                
+   Network Device List                                   Network Device         
+ > MAC:02:76:C6:00:09:79                                                        
+ > MAC:00:02:F7:00:9C:3C                                                        
+                                                                                
+   Press ESC to exit.                                                           
+     
+     
+New card has MAC  > MAC:02:76:C6:00:09:79                                                        
+     
+REALTEK Drivers
+---------------
+https://www.realtek.com/en/component/zoo/category/network-interface-controllers-10-100-1000m-gigabit-ethernet-pci-express-software
+     
+
+TO DO: Install Drivers new card.
+
+Big breakthrough:
+USB Thetering via mobile worked! Morello has network again, at least while my mobile is around.
+
+
+
+bin/bootstrap_cheriBSD
+
+
+
+
+
+
+11 jan
+==================================================================================================================
+
+https://docs.freebsd.org/doc/5.3-RELEASE/usr/share/doc/handbook/config-network-setup.html
+
+root@cheripleb:~/devjob_2b4ed310/core0/us # /etc/rc.d/netif restart
+dhclient not running? (check /var/run/dhclient/dhclient.re0.pid).
+Stopping Network: lo0 re0.
+lo0: flags=8048<LOOPBACK,RUNNING,MULTICAST> metric 0 mtu 16384
+        options=680003<RXCSUM,TXCSUM,LINKSTATE,RXCSUM_IPV6,TXCSUM_IPV6>
+        groups: lo
+        nd6 options=21<PERFORMNUD,AUTO_LINKLOCAL>
+re0: flags=8802<BROADCAST,SIMPLEX,MULTICAST> metric 0 mtu 1500
+        options=8209b<RXCSUM,TXCSUM,VLAN_MTU,VLAN_HWTAGGING,VLAN_HWCSUM,WOL_MAGIC,LINKSTATE>
+        ether 00:02:f7:00:9c:3c
+        media: Ethernet autoselect (none)
+        status: no carrier
+        nd6 options=29<PERFORMNUD,IFDISABLED,AUTO_LINKLOCAL>
+Starting Network: lo0 re0.
+lo0: flags=8049<UP,LOOPBACK,RUNNING,MULTICAST> metric 0 mtu 16384
+        options=680003<RXCSUM,TXCSUM,LINKSTATE,RXCSUM_IPV6,TXCSUM_IPV6>
+        inet6 ::1 prefixlen 128
+        inet6 fe80::1%lo0 prefixlen 64 scopeid 0x2
+        inet 127.0.0.1 netmask 0xff000000
+        groups: lo
+        nd6 options=21<PERFORMNUD,AUTO_LINKLOCAL>
+re0: flags=8843<UP,BROADCAST,RUNNING,SIMPLEX,MULTICAST> metric 0 mtu 1500
+        options=8209b<RXCSUM,TXCSUM,VLAN_MTU,VLAN_HWTAGGING,VLAN_HWCSUM,WOL_MAGIC,LINKSTATE>
+        ether 00:02:f7:00:9c:3c
+        media: Ethernet autoselect (none)
+        status: no carrier
+        nd6 options=29<PERFORMNUD,IFDISABLED,AUTO_LINKLOCAL>
+
+-----UEFI
+
+/------------------------------------------------------------------------------\
+|                             Network Device List                              |
+\------------------------------------------------------------------------------/
+                                                                                
+   Network Device List                                   Network Device         
+ > MAC:00:02:F7:00:9C:3C                                                        
+                                                                                
+   Press ESC to exit.                                                           
+                                                                                
+   
+
+-----------------------------
+
+Powered off via PSU switch for 1 hour, also unplugged electricity
+Disconnected all connections (eth, dbg-cable, usbstick)
+------------------------------
+
+Direct eth connection between host(linux) and Morelloboard(cheriBSD) [without switch]
+
+HOST:
+dmesg:
+[161307.954426] r8169 0000:02:00.0 enp2s0: Link is Up - 100Mbps/Full - flow control off
+
+ifconfig:
+enp2s0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 192.168.0.38  netmask 255.255.255.0  broadcast 192.168.0.255
+        inet6 fe80::e654:e8ff:fe78:f712  prefixlen 64  scopeid 0x20<link>
+        inet6 fd20:1662:cdb7:0:e654:e8ff:fe78:f712  prefixlen 64  scopeid 0x0<global>
+        inet6 2a02:c7c:39ac:2c00:e654:e8ff:fe78:f712  prefixlen 64  scopeid 0x0<global>
+        ether e4:54:e8:78:f7:12  txqueuelen 1000  (Ethernet)
+        RX packets 1280030  bytes 971266778 (926.2 MiB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 930210  bytes 163968637 (156.3 MiB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+
+MORELLO:
+dmesg:
+[no new entries]. Last is:re0: link state changed to DOWN
+
+ifconfig:
+re0: flags=8843<UP,BROADCAST,RUNNING,SIMPLEX,MULTICAST> metric 0 mtu 1500
+        options=8209b<RXCSUM,TXCSUM,VLAN_MTU,VLAN_HWTAGGING,VLAN_HWCSUM,WOL_MAGIC,LINKSTATE>
+        ether 00:02:f7:00:9c:3c
+        media: Ethernet autoselect (none)
+        status: no carrier
+        nd6 options=29<PERFORMNUD,IFDISABLED,AUTO_LINKLOCAL>
+
+
+--------------------------------------------
+wget https://download.freebsd.org/releases/arm64/aarch64/ISO-IMAGES/13.1/FreeBSD-13.1-RELEASE-arm64-aarch64-mini-memstick.img.xz
+
+root@roston:/home/root1m3/morello# dd if=FreeBSD-13.1-RELEASE-arm64-aarch64-mini-memstick.img of=/dev/sdd bs=1048576
+
+FreeBSD-13.1 - Live CD
+----------------------
+root@:~ # ifconfig
+re0: flags=8802<BROADCAST,SIMPLEX,MULTICAST> metric 0 mtu 1500
+        options=8209b<RXCSUM,TXCSUM,VLAN_MTU,VLAN_HWTAGGING,VLAN_HWCSUM,WOL_MAGIC,LINKSTATE>
+        ether 00:02:f7:00:9c:3c
+        media: Ethernet autoselect (none)
+        status: no carrier
+        nd6 options=29<PERFORMNUD,IFDISABLED,AUTO_LINKLOCAL>
+
+
+
+10 jan
+==================================================================================================================
+
+testing the last succssful image, the one built with Paulius:
+root@roston:/home/paulius/cheri/output/cheribsd-release-morello-purecap# dd if=FreeBSD-14.0-CURRENT-arm64-aarch64c-memstick.img of=/dev/sde  bs=1048576
+798+1 records in
+798+1 records out
+836778496 bytes (837 MB, 798 MiB) copied, 428.003 s, 2.0 MB/s
+
+Acquiring DHCP lease...  
+DHCP lease acquisition failed.  
+
+----------
+
+Forget about Ethernet interface. Let's install latest cheriBSD and move on using with memsticks to transfer data back and forth.
+
+cherribsd_ver="22.12"
+
+Installed CherriBSD 22.12 with static ipv4 configuration
+
+
+9 jan
+==================================================================================================================
+MCC: reboot
+DISPLAY: No network cable detected
+
+rewrite firmware
+
+root@roston:/home/root1m3/morello/board-firmware# git pull
+fatal: detected dubious ownership in repository at '/home/root1m3/morello/board-firmware'
+To add an exception for this directory, call:
+
+	git config --global --add safe.directory /home/root1m3/morello/board-firmware
+root@roston:/home/root1m3/morello/board-firmware# git config --global --add safe.directory /home/root1m3/morello/board-firmware
+root@roston:/home/root1m3/morello/board-firmware# git pull
+remote: Enumerating objects: 11, done.
+remote: Counting objects: 100% (11/11), done.
+remote: Compressing objects: 100% (10/10), done.
+remote: Total 11 (delta 3), reused 7 (delta 1), pack-reused 0
+Unpacking objects: 100% (11/11), 2.73 MiB | 2.43 MiB/s, done.
+From https://git.morello-project.org/morello/board-firmware
+   05140de..210f2c2  morello/mainline     -> origin/morello/mainline
+ * [new branch]      cherry-pick-b9d06517 -> origin/cherry-pick-b9d06517
+ * [new branch]      morello/release-1.5  -> origin/morello/release-1.5
+Updating 05140de..210f2c2
+Fast-forward
+ SOFTWARE/AARCH64/fip.bin    | Bin 2235727 -> 2235727 bytes
+ SOFTWARE/AARCH64/mcp_fw.bin | Bin 21420 -> 21444 bytes
+ SOFTWARE/AARCH64/scp_fw.bin | Bin 170228 -> 170256 bytes
+ SOFTWARE/fip.bin            | Bin 2235727 -> 2235727 bytes
+ SOFTWARE/mcp_fw.bin         | Bin 21420 -> 21444 bytes
+ SOFTWARE/scp_fw.bin         | Bin 170228 -> 170256 bytes
+ 6 files changed, 0 insertions(+), 0 deletions(-)
+root@roston:/home/root1m3/morello/board-firmware# cd ..
+root@roston:/home/root1m3/morello# ls /media/mm/
+ARKITECH/            ARKITECH-221221.tgz  C175-C436/           
+root@roston:/home/root1m3/morello# ls /media/mm/C175-C436/
+config.txt  ee0364b.txt  LIB  LICENSES	MB  SOFTWARE
+root@roston:/home/root1m3/morello#  bin/firmware_update --nobackup --mnt /media/mm/C175-C436 git
+nobackup flag
+pulling changes in board firmware
+Already up to date.
+/home/root1m3/morello
+#################################################
+Overwiting sdcard.
+sdcard at /media/mm/C175-C436
+WARNING: not backing-up the current sdcard content!.
+new content from: board-firmware
+#################################################
+yes?
+yes
+deleting old firmware in sdcard
+copying new firmware in sdcard
+syncing
+done!.
+umount /media/mm/C175-C436
+When done, you must unmount the mounted filesystem (USB_OFF) to ensure that all blocks in your workstation's filesystem buffer cache have been written back, and to avoid concurrent accesses leading to possible filesystem corruption. This must be done before issuing the MCC reboot command.
+
+usb_off
+Disabling debug USB...
+
+MCC to access SD card request acknowledged.
+Cmd> 
+
+
+reboot
+------------------
+
+MnpSyncSendPacket: No network cable detected.
+
+firmware upgrade didnt fix the ethernet problem.
+
+
+===========================
+Last Ave: checking datetime. It was 2 days behind! time was also funny
+
+Debug> date
+07/01/2023
+
+Change Date? Y\N >y
+D:>9
+M:>1
+Y:>2023
+Debug> date
+09/01/2023
+
+Change Date? Y\N >n
+Debug> 
+
+Debug> time
+23 : 30 : 48
+
+Change Time? Y\N >y
+s:>0
+m:>57
+h:>11
+Debug> 
+
+---------------------------
+
+reboot
+
+MnpSyncSendPacket: No network cable detected.
+
+
+---------------------------------
+
+CHERI (CAM): https://www.cl.cam.ac.uk/research/security/ctsrd/cheri/cheri-publications.html
+CHERI C/C++ Programming Guide: https://www.cl.cam.ac.uk/techreports/UCAM-CL-TR-947.pdf
+
+
+paper: Towards Automatic Compartmentalization of C Programs on Capability Machines - https://people.mpi-sws.org/~elkorashy/files/auto-comp-c-fcs2017.pdf
+
+---------------------------------
+WRITE CHERIBSD 22.12 (latest)
+
+cherribsd_ver="22.12"
+bin/cherriBSD_stick
+erase /dev/sdg
+record CheriBSD Boot USB drive:
+1219+1 records in
+1219+1 records out
+1278294528 bytes (1.3 GB, 1.2 GiB) copied, 428.087 s, 3.0 MB/s
+
+
+------------------------------------
+
+Plug memstick into board and boot
+
+Time :  13:09:06 
+Date :  09:01:2023 
+
+(clock checked OK)
+
+--------------------------------------
+
+MnpSyncSendPacket: No network cable detected.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 8 jan
 ==================================================================================================================
@@ -66,6 +390,54 @@ sdg
 Input "erase /dev/sdg"
 erase /dev/sdg   
 record CheriBSD Boot USB drive:
+777+1 records in
+777+1 records out
+814955008 bytes (815 MB, 777 MiB) copied, 209.052 s, 3.9 MB/s
+
+stick Morello:
+poweoff - electricity cut for few minutes
+
+/home/root1m3/morello/logdata/2023-01-08/1673192887394.jpg    Morello board off. USB debug cable + USB Stick with cheriBSD 22.05p1 installer + Network cable (other end plugged in inet router).
+
+Arm M1SDP MCC Boot loader v1.0.0
+HBI0364 build 579
+
+MCC: Power On
+
+
+Arm M1SDP MCC Firmware v2.3.2
+Build Date: Aug  3 2022
+
+Powering up system...
+
+MCC to access SD card request acknowledged.
+Clear ULINK JTAG
+
+Time :  04:46:31 
+Date :  07:01:2023 
+
+Switching on ATXPSU...
+Switching on main power...
+
+12V Rail Check Pass
+
+Reading Board File \MB\HBI0364B\io_v010f.txt
+TOTAL OSCCLKS: 15
+PMIC RAM configuration (80_1_86G.bin)...
+
+Temperature (deg C)
+Outlet = 23.2 PMIC   = 25.3 SoC = 25.2 IN2  = 24.9 IN1 = 23.2 
+MidBrd = 25   PCIeSW = 24   MCC = 26.2 FPGA = 23.3 SoC Fan Speed = 9%
+ALERT off
+
+Morello console:
+---------------
+Press ESCAPE for boot options.
+MnpSyncSendPacket: No network cable detected.
+
+screen locked
+
+MCC: reboot
 
 
 
