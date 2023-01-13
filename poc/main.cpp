@@ -1,4 +1,5 @@
 #include <iostream>
+#include <unordered_map>
 using namespace std;
 
 using pubkey_t = uint32_t;
@@ -8,15 +9,19 @@ struct wallet_t {
    }
    int balance;
 
-   static int next_balance{0};
+   static int next_balance;
 };
+
+int wallet_t::next_balance{0};
 
 pubkey_t me{3};
 
-//CHERI: pubkey i
+/*
+CHERI: pubkey i
   * cannot change others capabilities
   * cannot change its own capability
   * cannot access superior or sibling capabilities
+*/
 
 
 struct wallets_t: unordered_map<pubkey_t, wallet_t*> {
@@ -35,7 +40,7 @@ wallets_t wallets;
 
 wallet_t* lookup_wallet(pubkey_t& user) {
   auto i = wallets.find(user);
-  if (i == wallets.end) {
+  if (i == wallets.end()) {
     return nullptr;
   }
   return i->second;
@@ -46,12 +51,16 @@ int get_balance() {
   if (w == nullptr) {
     return 0;
   }
-  return w->balance();
+  return w->balance;
 }
 
 
 
-int main() { //explore wallet as given publickey
+int main(int argc, char** argv) { //explore wallet as given publickey
+  if (argc < 2) {
+    cerr << "KO 00001 Enter number representing pubkey\n";
+    return 1;
+  }
   me = atoi(argv[2]);
 
   //CHERI: tell CPU new permissions
@@ -65,7 +74,8 @@ int main() { //explore wallet as given publickey
   
   //malicious intention: I try to spy on other's wallets knowing that they are hosted here (in this process space)
   //software glich/code injection: I am able to disclose all wallets
-  for (int n = 0, auto& i: wallets) {
+  int n{0};
+  for (auto& i: wallets) {
     cout << "wallet " << ++n << ": balance " << i.second->balance << '\n';
   }
   return 0;
