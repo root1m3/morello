@@ -3,3 +3,36 @@
 pkg64 install llvm-base
 pkg64 install gdb-cheri
 pkg64c install libb64
+pkg64c install gmake
+pkg64 install autotools cryptopp
+pkg64c install bash nano
+pkg64c install git
+git clone https://github.com/weidai11/cryptopp.git
+cd cryptopp
+gmake
+#Running make again to see what failed
+#clang-13: error: ABI 'purecap' is not supported without feature 'morello'
+#c++ -DNDEBUG -DCRYPTOPP_DISABLE_ASM -g2 -O3 -fPIC -pthread -pipe -c cryptlib.cpp
+#c++ -DNDEBUG -DCRYPTOPP_DISABLE_ASM -g2 -O3 -fPIC -pthread -pipe -c cpu.cpp
+#...
+
+gmake install
+pushd /usr/local/include
+ln -s cryptopp crypto++
+popd
+
+pkg64c install devel/pkgconf
+pkg64 install glib
+pkg64c install base64
+pkg64 install rsync python
+
+git clone https://github.com/bitcoin-core/secp256k1.git
+cd secp256k1
+./autogen.sh
+./configure --prefix /usr/local --enable-experimental --enable-module-ecdh --disable-dependency-tracking --enable-benchmark=no  --enable-coverage=no --enable-tests=no --enable-exhaustive-tests=no
+gmake install
+cd ..
+ssh-keygen
+# /root/.ssh/id_rsa.pub ==> plebble.io/home/dev/.ssh/authorized_keys
+# /root/.ssh/id_rsa.pub ==> roston:/root/.ssh/authorized_keys
+
