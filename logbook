@@ -40,7 +40,7 @@ Design issue: compartmentalization
 Trying to learn how to:
 -how to use the otype field.
 -how to use the seal bit.
--how to elevate process priviledge using integers, e.g. from 0 to 6443.
+-how to elevate process priviledge using integers, e.g. from 0 (root priviledge) to 6443 (user with public key 6443).
  so the process can access capabilities either 0 or 6443 but not others e.g. 3330
 -how to recover original priviledges.
 
