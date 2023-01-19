@@ -1,6 +1,92 @@
 Morello LOG BOOK
 ================
 
+19 jan
+==================================================================================================================
+1:1
+
+[PASS] Milestone 1:
+[PASS]      Install Operating System.
+
+Milestone 0:
+[PASS]      Install git
+[PASS]      Clone source code
+[PASS]      Adapt devops scripts (made for debian Linux) to freeBSD
+[ok  ]      Install dev toolchain
+[OK  ]      Build and/or install dependencies: secp256k1
+[OK  ]      Build node software
+[    ]      Install and run.
+
+Milestone 1:
+[prog]      Design use case
+[PROG]      Implement use case
+[    ]      Run use case
+
+Milestone 2:
+[    ]      Document findings.
+
+
+INCIDENCIES
+-----------
+Network adapter
+Upgrading OS
+
+STATUS
+------
+studying capability fields:
+Tested spacial confinment.
+Design issue: compartmentalization
+Trying to learn how to:
+-how to use otype
+-how to use seal bit 
+-how to elevate process priviledge using integers, e.g. from 0 to 6443.
+ so the process can access capabilities either 0 or 6443 but not others e.g. 3330
+-how to recover original priviledges.
+
+
+
+
+
+
+14jan
+==================================================================================================================
+poc/main.cpp
+
+
+#include <cheri.h>
+#include <cheriintrin.h>
+
+Incompatible includes:
+c++  main.cpp
+In file included from main.cpp:28:
+/usr/local64/llvm-morello/lib/clang/13.0.0/include/cheriintrin.h:119:3: error: typedef redefinition with different types ('enum cheri_perms_t' vs 'unsigned int')
+} cheri_perms_t;
+  ^
+/usr/local64/llvm-morello/lib/clang/13.0.0/include/cheri.h:31:22: note: previous definition is here
+typedef unsigned int cheri_perms_t;
+                     ^
+1 error generated.
+*** Error code 1
+
+=======================================================================================
+
+//#include <cheri.h>
+#include <cheriintrin.h>
+
+
+Adversarial CHERI Exercises and Missions: https://ctsrd-cheri.github.io/cheri-exercises/cover/index.html
+
+
+----------------------------------------------------
+SURPRISE:
+delete p;
+cheri_tag_get(p)
+returns true after deleting the pointer
+-----------------------------------------------------
+
+
+
+
 13jan
 ==================================================================================================================
 
@@ -85,6 +171,70 @@ int main() { //explore wallet as given publickey
 
 
 morello/poc/main.cpp
+
+
+
+Android:enable USB Thethering.
+MORELLO:
+dhclient ue0
+
+adduser root1m3
+/home/root1m3
+git clone https://github.com/root1m3/morello.git
+
+
+[root1m3@cheripleb ~/morello/poc]$ ./a.out 1
+SUPERCAP> new user pubkey 0 balance 1
+SUPERCAP> new user pubkey 1 balance 2
+SUPERCAP> new user pubkey 2 balance 3
+SUPERCAP> new user pubkey 3 balance 4
+SUPERCAP> new user pubkey 4 balance 5
+SUPERCAP> new user pubkey 5 balance 6
+SUPERCAP> new user pubkey 6 balance 7
+SUPERCAP> new user pubkey 7 balance 8
+SUPERCAP> new user pubkey 8 balance 9
+SUPERCAP> new user pubkey 9 balance 10
+I am public key: 1. balance 2
+wallet 9: balance 10
+wallet 8: balance 9
+wallet 7: balance 8
+wallet 6: balance 7
+wallet 5: balance 6
+wallet 4: balance 5
+wallet 3: balance 4
+wallet 2: balance 3
+wallet 1: balance 2
+wallet 0: balance 1
+[root1m3@cheripleb ~/morello/poc]$ 
+
+-----------------------------------------------------------
+#include <cheri.h>  
+#include <cheriintrin.h>  
+#include <cheri/cheri.h> 
+-----------------------------------------------------------
+
+[root1m3@cheripleb ~/morello/poc]$ make
+c++  main.cpp
+In file included from main.cpp:9:
+/usr/local64/llvm-morello/lib/clang/13.0.0/include/cheriintrin.h:119:3: error: typedef redefinition with different types ('enum cheri_perms_t' vs 'unsigned int')
+} cheri_perms_t;
+  ^
+/usr/local64/llvm-morello/lib/clang/13.0.0/include/cheri.h:31:22: note: previous definition is here
+typedef unsigned int cheri_perms_t;
+                     ^
+1 error generated.
+*** Error code 1
+
+Stop.
+make: stopped in /usr/home/root1m3/morello/poc
+
+-----------------------------------------------------------
+
+
+
+
+
+
 
 
 12jan
