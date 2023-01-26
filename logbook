@@ -1,6 +1,51 @@
 Morello LOG BOOK
 ================
 
+26 jan
+==================================================================================================================
+Future Flaw Protection
+----------------------
+
+{PC} integer encoded in PC
+{CAP} integer encoded in Capability
+
+values:
+{PC} = 0 - Program is superuser (have access to any capability in the program)
+{CAP} = 0 - Data is accessible for any user (non sensistive data, e.g. public listings)
+
+{PC} > 0 - Program has access to capabilities where {CAP} == {PC} or {CAP} == 0)
+{CAP} > 0 - Data is readable only if {PC} == 0 or {PC}=={CAP}
+
+malloc -> create CAP with {CAP} = {PC}
+
+pseudo-program:
+================================================
+{PC} init 0
+
+//w-sub-i compartiment for user i
+
+{PC}=1
+w1 = new int();
+{PC}=0
+
+{PC}=2
+w2 = new int();
+{PC}=0
+
+{PC}=3
+w3 = new int();
+{PC}=0
+
+userid=2 //the program realizes an user id
+
+{PC}=userid  //Load user id into Program Counter Capability
+
+[[[[[[[[[[..big program that will introduce a flaw in the future...]]]]]]]]]]]
+*w1; //the flaw allows an attacker (user 2) to have access to pointer w1 (belonging to user 1).
+     //CHERI tags the capability invalid when the HW realizes {PC}>0 && {CAP}>0 && {PC}!={CAP}
+========================================================
+
+
 19 jan
 ==================================================================================================================
 1:1
