@@ -1,11 +1,377 @@
+
 Morello LOG BOOK
 ================
+
+7 Feb
+==================================================================================================================
+
+
+
+
+
+
+6 Feb
+==================================================================================================================
+
+https://git.morello-project.org/morello/android/vendor/arm/morello-examples/-/tree/morello/mainline/compartment-demo
+
+https://www.cl.cam.ac.uk/techreports/UCAM-CL-TR-887.pdf
+
+git clone https://git.morello-project.org/morello/android/vendor/arm/morello-examples.git
+
+CHERITech 22 (#cheritech22) CHERI Technical Workshop 2022 Tue Sep 6th 2022 10:00 - 18:00
+King's College London, Edmond J. Safra Lecture Theatre, King's Building, Strand Campus 
+https://soft-dev.org/events/cheritech22/
+
+
+Enclaves - Jennifer Jackson
+https://soft-dev.org/events/cheritech22/slides/Jackson.pdf
+
+asm ("ldr x9, [x29, #32]");
+x29            0xfffffff7ff80      281474976186240
+c29            0xdc5d40003ffdbfff0000fffffff7ff80 0xfffffff7ff80 [rwRW,0xffffbff80000-0xfffffff80000]
+
+
+Morello ASM:
+https://developer.arm.com/documentation/ddi0606/latest
+
+
+ARM glossary of acronyms: https://developer.arm.com/documentation/105565/0100
+
+
+
+
+5 Feb
+==================================================================================================================
+
+http://www.ethernut.de/en/documents/arm-inline-asm.html
+https://developer.arm.com/documentation/dui0068/b/ARM-Instruction-Reference
+https://sourceware.org/binutils/docs/as/ARM-Directives.html
+
+CompartOS: CHERI Compartmentalization for Embedded Systems
+https://arxiv.org/pdf/2206.02852.pdf
+
+
+https://github.com/CTSRD-CHERI/cherios
+
+Capability registers
+
+The Morello architecture introduces the term capability register to define a register that can hold a capability. Capability registers are 129 bits. The general-purpose registers are extended to hold capabilities. Capability registers have the following access views:
+
+    129-bit when referenced as Cn [C0 to C30]
+    64-bit when referenced as Xn [X0 to X30]
+    32-bit when referenced as Wn [W0 to W30]
+
+
+https://accu.org/journals/overload/13/68/goodliffe_281/
+
+
+“The single biggest problem in communication is the illusion that it has taken place.”
+—George Bernard Shaw
+
+
+https://developer.arm.com/documentation/100067/0612/armclang-Integrated-Assembler/Syntax-of-assembly-files-for-integrated-assembler?lang=en
+
+gdb registers
+-------------
+gdb ./a.out
+b main
+r
+info registers
+x0             0xffffbff7f820      281473902442528
+x1             0xfffffff7ff50      281474976186192
+x2             0xfffffff7ff60      281474976186208
+x3             0xfffffff7ff78      281474976186232
+x4             0xfffffff7ff7c      281474976186236
+x5             0x20                32
+x6             0xfffffff7dbd0      281474976177104
+x7             0xfffffff7de1c      281474976177692
+x8             0x1                 1
+x9             0x0                 0
+x10            0xe0                224
+x11            0x427               1063
+x12            0x0                 0
+x13            0x10                16
+x14            0x10                16
+x15            0x0                 0
+x16            0x405265e5          1079141861
+x17            0xfffffff7ff80      281474976186240
+x18            0xffffffffffffffff  -1
+x19            0x401573f9          1075147769
+x20            0xffffbff7f840      281473902442560
+x21            0xffffbff7f820      281473902442528
+x22            0x1                 1
+x23            0x0                 0
+x24            0x0                 0
+x25            0x0                 0
+x26            0x0                 0
+x27            0x0                 0
+x28            0x0                 0
+x29            0xfffffff7ff80      281474976186240
+x30            0x113ba9            1129385
+sp             0xfffffff7ff10      0xfffffff7ff10
+pc             0x114304            0x114304 <main(int, char**)+80>
+cpsr           0x84000200          [ EL=0 D BTYPE=0 C64 N ]
+fpsr           0x0                 [ ]
+fpcr           0x0                 [ RMode=0 ]
+c0             0xdc5d40007840f8200000ffffbff7f820 0xffffbff7f820 [rwRW,0xffffbff7f820-0xffffbff7f840]
+c1             0xdc5d40007f60ff500000fffffff7ff50 0xfffffff7ff50 [rwRW,0xfffffff7ff50-0xfffffff7ff60]
+c2             0xdc5d40007f70ff600000fffffff7ff60 0xfffffff7ff60 [rwRW,0xfffffff7ff60-0xfffffff7ff70]
+c3             0xdc5d40007f7cff780000fffffff7ff78 0xfffffff7ff78 [rwRW,0xfffffff7ff78-0xfffffff7ff7c]
+c4             0xdc5d40007f80ff7c0000fffffff7ff7c 0xfffffff7ff7c [rwRW,0xfffffff7ff7c-0xfffffff7ff80]
+c5             0x20                0x20
+c6             0xdc5d40005be0dbd00000fffffff7dbd0 0xfffffff7dbd0 [rwRW,0xfffffff7dbd0-0xfffffff7dbe0]
+c7             0xdc5d40005e1dde1c0000fffffff7de1c 0xfffffff7de1c [rwRW,0xfffffff7de1c-0xfffffff7de1d]
+c8             0x1                 0x1
+c9             0x0                 0x0
+c10            0xe0                0xe0
+c11            0x427               0x427
+c12            0x0                 0x0
+c13            0x10                0x10
+c14            0x10                0x10
+c15            0x0                 0x0
+c16            0xb05fc000a1563c8700000000405265e5 0x405265e5 <atexit> [rxRE,0x403c8000-0x40a15000] (sentry)
+c17            0xdc5d40003ffdbfff0000fffffff7ff80 0xfffffff7ff80 [rwRW,0xffffbff80000-0xfffffff80000]
+c18            0xffffffffffffffff  0xffffffffffffffff
+c19            0xb05dc0008e473a0300000000401573f9 0x401573f9 <rtld_nop_exit> [rxRE,0x4013a000-0x4018e400] (sentry)
+c20            0xdc5d40007950f8400000ffffbff7f840 0xffffbff7f840 [rwRW,0xffffbff7f840-0xffffbff7f950]
+c21            0xdc5d40007840f8200000ffffbff7f820 0xffffbff7f820 [rwRW,0xffffbff7f820-0xffffbff7f840]
+c22            0x1                 0x1
+c23            0x0                 0x0
+c24            0x0                 0x0
+c25            0x0                 0x0
+c26            0x0                 0x0
+c27            0x0                 0x0
+c28            0x0                 0x0
+c29            0xdc5d40003ffdbfff0000fffffff7ff80 0xfffffff7ff80 [rwRW,0xffffbff80000-0xfffffff80000]
+c30            0xb05dc000b47700040000000000113ba9 0x113ba9 <_start+184> [rxRE,0x100000-0x13a380] (sentry)
+csp            0xdc5d40003ffdbfff0000fffffff7ff10 0xfffffff7ff10 [rwRW,0xffffbff80000-0xfffffff80000]
+pcc            0xb05dc000347700040000000000114304 0x114304 <main(int, char**)+80> [rxRE,0x100000-0x13a380]
+ddc            0x0                 0x0
+ctpidr         0xdc5d4000351fa0470000000040a7a050 0x40a7a050 [rwRW,0x40a7a040-0x40a7f518]
+rcsp           0x0                 0x0
+rddc           0x0                 0x0
+rctpidr        0x0                 0x0
+cid            0x0                 0x0
+cctlr          <unavailable>
+
+https://blog.acolyer.org/2019/05/28/cheri-abi/
+
+Data Compartmentalization using CHERI Hybrid
+https://soft-dev.org/events/cheritech22/slides/Lascu.pdf
+https://github.com/capablevms/CHERI-ELF-comp
+https://www.morello-project.org/capinfo
+
+
+
+ARM Assembly Instructions:
+https://developer.arm.com/documentation/dui0552/a/the-cortex-m3-instruction-set/instruction-set-summary
+
+
+
+4 Feb
+==================================================================================================================
+
+https://www.morello-project.org/resources/cheriseed-port-effortlessly-to-cheri/
+https://git.morello-project.org/morello/musl-libc/-/tree/cheriseed
+
+https://git.morello-project.org/morello/musl-libc/-/blob/morello/master/src/malloc/lite_malloc.c
+
+
+
+			void *mem = __mmap(0, req, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0);
+			if (mem == MAP_FAILED) {
+				UNLOCK(lock);
+				return 0;
+			}
+
+#ifdef __CHERI_PURE_CAPABILITY__
+			/* TODO: Remove after mmap implementation. */
+			mem = __builtin_cheri_bounds_set(mem, req);
+			mem = __builtin_cheri_perms_and(mem, MUSL_CAP_PROT_MALLOC);
+#endif
+			if (!new_area) {
+				UNLOCK(lock);
+				return mem;
+			}
+
+
+Arm C Language Extensions
+https://developer.arm.com/documentation/101028/latest
+
+/usr/include/cheri/cherireg.h
+The kernel snags one of the software-defined permissions for the purposes of authorising system calls from $pcc
+
+/usr/include/machine/cherireg.h
+#define CHERI_PERM_GLOBAL                       (1 << 0)        /* 0x00000001 */
+#define CHERI_PERM_EXECUTIVE                    (1 << 1)        /* 0x00000002 */
+#define CHERI_PERM_SW0                          (1 << 2)        /* 0x00000004 */
+#define CHERI_PERM_SW1                          (1 << 3)        /* 0x00000008 */
+#define CHERI_PERM_SW2                          (1 << 4)        /* 0x00000010 */
+#define CHERI_PERM_SW3                          (1 << 5)        /* 0x00000020 */
+#define CHERI_PERM_MUTABLE_LOAD                 (1 << 6)        /* 0x00000040 */
+#define CHERI_PERM_COMPARTMENT_ID               (1 << 7)        /* 0x00000080 */
+#define CHERI_PERM_BRANCH_SEALED_PAIR           (1 << 8)        /* 0x00000100 */
+#define CHERI_PERM_INVOKE                       CHERI_PERM_BRANCH_SEALED_PAIR
+#define CHERI_PERM_SYSTEM                       (1 << 9)        /* 0x00000200 */
+#define CHERI_PERM_SYSTEM_REGS                  CHERI_PERM_SYSTEM
+#define CHERI_PERM_UNSEAL                       (1 << 10)       /* 0x00000400 */
+#define CHERI_PERM_SEAL                         (1 << 11)       /* 0x00000800 */
+#define CHERI_PERM_STORE_LOCAL_CAP              (1 << 12)       /* 0x00001000 */
+#define CHERI_PERM_STORE_CAP                    (1 << 13)       /* 0x00002000 */
+#define CHERI_PERM_LOAD_CAP                     (1 << 14)       /* 0x00004000 */
+#define CHERI_PERM_EXECUTE                      (1 << 15)       /* 0x00008000 */
+#define CHERI_PERM_STORE                        (1 << 16)       /* 0x00010000 */
+#define CHERI_PERM_LOAD                         (1 << 17)       /* 0x00020000 */
+
+/*
+ * The CHERI object-type space is split between userspace and kernel,
+ * permitting kernel object references to be delegated to userspace (if
+ * desired).  Currently, we provide 13 bits of namespace to each, with the top
+ * bit set for kernel object types, but it is easy to imagine other splits.
+ * User and kernel software should be written so as to not place assumptions
+ * about the specific values used here, as they may change.
+ *
+ * On Morello otype 0 is unsealed, and 1-3 are reserved.
+ */
+#define CHERI_OTYPE_BITS        (14)
+#define CHERI_OTYPE_USER_MIN    (4)
+#define CHERI_OTYPE_USER_MAX    ((1 << (CHERI_OTYPE_BITS - 1)) - 1)
+#define CHERI_OTYPE_KERN_MIN    (1 << (CHERI_OTYPE_BITS - 1))
+#define CHERI_OTYPE_KERN_MAX    ((1 << CHERI_OTYPE_BITS) - 1)
+#define CHERI_OTYPE_KERN_FLAG   (1 << (CHERI_OTYPE_BITS - 1))
+#define CHERI_OTYPE_ISKERN(x)   (((x) & CHERI_OTYPE_KERN_FLAG) != 0)
+#define CHERI_OTYPE_ISUSER(x)   (!(CHERI_OTYPE_ISKERN(x)))
+ 
+ On Morello otype 0 is unsealed, and 1-3 are reserved.
+
+https://cnlelema.github.io/memo/en/cheri/cheri-domain/cheri-seal/
+An alternative architecture would have been one with implicit* unsealing, where a sealed capability could be dereferenced without explicitly unsealing it first, provided that the subsystem attempting the dereference had some kind of ambient authority that permitted it to dereference sealed capabilities of that type. This ambient authority could have taken the form of a protection ring or the otype field of PCC.
+
+
+
+
+
+
+
+
+3 Feb
+==================================================================================================================
+
+CheriABI Showcase
+https://github.com/CTSRD-CHERI/cheri-exercises/tree/master/src/exercises/cheriabi
+
+cd /root
+git clone https://github.com/CTSRD-CHERI/llvm-project.git
+
+malloc
+
+trying to compile:   register int counter asm("PCC");
+
+
+https://www.cl.cam.ac.uk/~pes20/morello-proofs-esop2022.pdf
+
+Registers: 
+Arm® Architecture Reference Manual Supplement Morello for A-profile Architecture
+https://developer.arm.com/documentation/ddi0606/latest
+
+
+
+
+2 Feb
+==================================================================================================================
+
+realtek: mission: install drivers
+    clone cheribsd src in /usr/src
+    checkout 
+    
+jobs: sysctl hw.model hw.machine hw.ncpu
+
+
+
+
+https://github.com/CTSRD-CHERI/cheri-c-programming/releases/tag/draft-20230201-e31e62bb3d34658e1adcfd0854de52a8cdc18a35
+
+https://developer.arm.com/documentation/den0133/0100/Morello-prototype-architecture/Pointers-and-capabilities
+
+Arm® Architecture Reference Manual Supplement Morello for A-profile Architecture
+https://developer.arm.com/documentation/ddi0606/latest
+
+https://www.cl.cam.ac.uk/techreports/UCAM-CL-TR-951.pdf
+
+
+
+
+
+1 Feb
+==================================================================================================================
+
+Paper: CompartOS - Hessam Almatary - Nov 2022
+https://www.cl.cam.ac.uk/techreports/UCAM-CL-TR-976.pdf
+
+   Embedded systems
+   Trampoline switch
+   libdl - c18n
+
+
+CHERI: A Hybrid Capability-System Architecture for Scalable Software Compartmentalization
+https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=7163016
+
+
+
+31 jan
+==================================================================================================================
+root@cheripleb:~ # zstd test_zstd 
+zstd: error 11 : Allocation error : not enough memory
+
+ack: pkg64 install p5-ack
+
+
+pciconf -lv
+
+none4@pci0:5:0:0: class=0x020000 rev=0x05 hdr=0x00 vendor=0x10ec device=0x8125 subvendor=0x10ec subdevice=0x8125
+    vendor     = 'Realtek Semiconductor Co., Ltd.'
+    device     = 'RTL8125 2.5GbE Controller'
+    class      = network
+    subclass   = ethernet
+
+re0@pci0:7:0:0: class=0x020000 rev=0x0c hdr=0x00 vendor=0x10ec device=0x8168 subvendor=0x10ec subdevice=0x0123
+    vendor     = 'Realtek Semiconductor Co., Ltd.'
+    device     = 'RTL8111/8168/8411 PCI Express Gigabit Ethernet Controller'
+    class      = network
+    subclass   = ethernet
+
+reboot
+
+
+UEFI:
+                                                                                
+   Network Device List                                   Network Device         
+ > MAC:02:76:C6:00:09:79                                                        
+ > MAC:00:02:F7:00:9C:3C                                                        
+                                                                                
+   Press ESC to exit.                                                           
+     
+     
+New card has MAC  > MAC:02:76:C6:00:09:79                                                        
+     
+REALTEK Drivers
+---------------
+https://www.realtek.com/en/component/zoo/category/network-interface-controllers-10-100-1000m-gigabit-ethernet-pci-express-software
+     
+FreeBSD drivers at:
+/home/mm/DSbD/realtek_drivers_freeBSD/rtl_bsd_drv_v198.00.tgz
+
+
+pkg64c install wget
+wget https://plebble.net/rtl_bsd_drv_v198.00.tgz
+
+
 
 26 jan
 ==================================================================================================================
 Future Flaw Protection
 ----------------------
-
 {PC} integer encoded in PC
 {CAP} integer encoded in Capability
 
@@ -20,6 +386,67 @@ malloc -> create CAP with {CAP} = {PC}
 
 pseudo-program:
 ================================================
+executive mode
+{PC} init 0
+
+//w-sub-i compartiment for user i
+
+{PC}=1
+w1 = new int();
+{PC}=0
+
+{PC}=2
+w2 = new int();
+{PC}=0
+
+{PC}=3
+w3 = new int();
+{PC}=0
+
+userid=2 //the program realizes an user id
+
+restricted mode
+
+{PC}=userid  //Load user id into Program Counter Capability
+
+[[[[[[[[[[..big program that will introduce a flaw in the future...]]]]]]]]]]]
+*w1; //the flaw allows an attacker (user 2) to have access to pointer w1 (belonging to user 1).
+     //CHERI tags the capability invalid when the HW realizes {PC}>0 && {CAP}>0 && {PC}!={CAP}
+
+
+trampoline - runs executive mode
+========================================================
+
+
+learning session 26-Jan.
+    the dynlinker c18n model
+    the cocalls c18n model
+
+
+The flavour c18n model:
+based on storing data in a service field of the capability.
+PC Register as well.
+With logic:
+value of the service field 
+capability {PC}   {CAP}   result tag
+             0      >=0       1 (Valid)
+             >0     0         1 (Valid)
+             >0     >0        1 (Valid if numbers match);
+                              0 (Invalid otherwise)
+
+!xor {PC} {CAP}
+
+
+
+0 & 0 = 1
+0 & 1 = 1 
+1 & 0 = 1
+1 & 1 = 1 
+
+Orig version before learning session 26-Jan:
+
+
+
 {PC} init 0
 
 //w-sub-i compartiment for user i
