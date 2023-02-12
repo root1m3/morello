@@ -2,6 +2,65 @@
 Morello LOG BOOK
 ================
 
+10 Feb
+==================================================================================================================
+
+
+https://git.morello-project.org/morello/android/vendor/arm/morello-examples/-/blob/633465072c41dea28cf085cf40da41381bbef587/compartment-demo/cheribsd_make.sh
+
+
+Compiler explorer morello:
+https://cheri-compiler-explorer.cl.cam.ac.uk/z/xoerWP
+
+
+
+
+9 Feb
+==================================================================================================================
+
+https://github.com/capablevms/CHERI-ELF-comp
+
+
+
+
+8 Feb
+==================================================================================================================
+
+https://developer.arm.com/documentation/den0132/0100/Overview/ObjectType-and-Sealing-capabilities?lang=en
+https://developer.arm.com/documentation/den0132/0100/Overview/Capability-structure?lang=en
+
+https://www.cl.cam.ac.uk/research/security/ctsrd/pdfs/2019tc-cheri-concentrate.pdf
+
+The Morello Capability format is similar but not identical to the CHERI-concentrate format.
+
+A Capability value comprises the following fields:
+• Value: 64 bits.
+• Bounds: 87 bits.
+• Flags: 8 bits.
+• ObjectType: 15 bits.
+• Permissions: 16 bits.
+• Tag: 1 bit.
+• Global: 1 bit.
+• Executive: 1 bit.
+
+https://www.cl.cam.ac.uk/research/security/ctsrd/
+Clean Slate Trustworthy Secure Research and Development (CTSRD - pronounced "custard") is a joint research project between SRI International's Computer Science Laboratory and the University of Cambridge Computer Laboratory, supported by DARPA (part of the DARPA CRASH, MRC, and SSITH programmes), Google, and Arm
+
+
+https://git.morello-project.org/morello/android/vendor/arm/morello-examples/-/tree/morello/mainline/compartment-demo
+
+post:  https://app.slack.com
+I am trying to figure out a in-process/user-space c18n scheme for the Morello board where the main execution thread would set some environmental capability for which a subsequently spawned worker thread  would have access to all caps except a number of them.
+The program logic would create a number of general-accessible caps plus a number of caps that can only be accessed by either a supervisor thread or a thread 'marked' with a particular number(cid - 64 bits ideally).
+I've read about a potential confused-deputy flaw in this scheme, but I think in my use-case it is not a concern.I am reading all possible docs/slides/code I find about Enclaves, TEE, trampoline, seal/unseal, otype, PCC/DCC, executive/restricted modes. CCall/CIvoke.. but it is taking a lot of time to get into the straight line of action.
+I'd appreciate any suggestions, ideas or pointers to example code that could help me achieve my purpose of letting a thread access every cap except a few of them which are marked with an arbitrary integer.Thanks
+Marcos
+
+
+
+
+
+
 7 Feb
 ==================================================================================================================
 
@@ -9,7 +68,9 @@ https://git.morello-project.org
 https://github.com/CTSRD-CHERI/
  
 
+https://github.com/CTSRD-CHERI/cheri-c-programming/releases/tag/UCAM-CL-TR-947
 
+https://www.cl.cam.ac.uk/research/security/ctsrd/pdfs/20151207-law2015-cheri-arch-release.pdf
 
 
 6 Feb
