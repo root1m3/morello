@@ -2,6 +2,77 @@
 Morello LOG BOOK
 ================
 
+13 Feb
+==================================================================================================================
+Please provide a high-level overview of your activities during the programme. (Max 6 bullet points; max 600 words total)
+
+Installing CheriBSD and dev toolchain.
+    This apparently straightforward activity took considerable time with many frustrated attempts until the operating system finally installed and boot correctly.
+    The origin of the problem was simple: having a keyboard plugged on USB port.
+
+Adapt devops scripts (made for debian Linux) to freeBSD
+    Some FreeBSD command-line tools include programs using different interface (bourne) from their version shipped on linux distributions. e.g. (sed).
+    Our codebase include scripts for different tasks: configure sources (pre-compilation step) and devops pipeline (deployment).
+
+Build and/or install dependencies: secp256k1
+    Our C++ sources didn't need to be adapted or adjusted in order to be compiled. Our only dependency, the cryptography library secp256k1, compiled without issues.
+
+Network card issue.
+    The integrated ethernet interface stopped working after disconnecting the cable during some networking reorg.
+    It wouldn't recover from it, even after reinstalling the OS.
+    A brand new card was installed, but we couldn't complete the task of compiling and installing a driver for it given frustrating compilation errors.
+    We found a workaround using USB Tethering via GSM to recover network connectivity.
+
+Design of a use case where sensitive data is compromised.
+    Time was spent to study and understand the low-level spec about capabilities and compartmentalization (c18n), along with current c18n models that are under active research and development.
+    We studied a c18n model based on the dynamic linker, where shared libraries are kept in compartments with a trampoline interface.
+    However this model is not suitable for our purpose because we need to isolate with more granularity.
+    We Figured out which features we would need a c18n scheme to have in order to seamlessly fit into our codebase design:
+    A model of c18n where we can use 'colors' (32, 64 or 128 bits integers) to mark worker threads. Colored threads would then, in general, be able to access
+    any capability, but if a particular capability had a color then such color should match the thread color, otherwise an exception would be raised by the hardware.
+
+Implement use case.
+    Unfortunately we couldn't achieve in the allocated time a practical implementation for our intended compartmentalization model, given the apparent impossibility
+    of assigning 'colours' to different capabilities that are scattered in heap memory, plus spawning coloured worker threads which are restricted from accessing any other color.
+    We can only speculate whether this model is interesting for a potential general purpose support in the CHERI specification.
+    A possible variation of the spec that would make this podel possible would include:
+    1.- Thread Color
+        Using a special register to store thread color: There exist a CompartmentID register with an unclear purpose, not sufficiently documented (cid).
+        Let's assume cid is such special register storing the desired thread color.
+        Once cid is set for any new thread it would become read-only for such thread.
+    2.- Capability color. A capability with a new special value for its otype field would make the coprocessor use a new circuit.
+        Any attemp of dereferencing any capability would make the coprocessor raise an exception if:
+            1.- otype is the key to enable this circuit.
+            2.- the address field (64 bit) doesn't match the value stored in the cid register.
+
+    This apparently simple support would enable compartments in our codebase with the adition of a few lines of code:
+        1.- worker thread spawn -> load cid with the assigned color (we'd use a hash of the user public key the thread is working for)
+        2.- privacy wallets would be created using capabilities with each user's public key hash as their encoded color.
+    Any failure or glitch in the algorithm of the worker thread that could allow an attacker to gain access to others wallets would not compromise them. 
+
+
+
+12 Feb
+==================================================================================================================
+
+Working on final report.
+
+Project Goal : what were you hoping to achieve?
+
+    We wanted to assess the incorporation of secure hardware as part of our products security-critical features.
+    We also want to provide as much valuable feedback as possible to the ongoing development of CHERI/Morello.
+
+    Our backend software is exposed to the naked internet and is subject to continuous attack attempts, where any
+    malicious adversary could eventually exploit any possible software vulnerability (either already existing or caused by a future flaw)
+    gaining ilegitimate access to the memory addresses containing user sensitive information e.g. cryptocurrency secret keys, private pictures, or electronic health records.
+    Once reached this state, Cheri would be able to stop the offender before user's secrets are compromised.
+    Enhanced protection increases the user's confidence.
+    As part of the assessment we wanted to achieve a proof of concept where an adversary would be able to compromise user's secrets.  (We would deliberately introduce a bug in the software allowing the attack).
+    Running this scenario on both the base architecture and the morello arch we expect to find a successful/frustrated attack respectively.
+
+
+
+
 10 Feb
 ==================================================================================================================
 
